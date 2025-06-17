@@ -135,3 +135,6 @@ venv.bak/
 
 # Thumbnails
 Thumbs.db
+
+
+instance/
