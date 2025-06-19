@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Meu Painel - GVA-WEB{% endblock %}
+
+{% block content %}
+    <h1>Meu Painel de Controle</h1>
+    <hr>
+
+    {# Seção para adicionar um novo local #}
+    <h2>Adicionar Novo Local</h2>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }} <p>
+            {{ form.name.label }}:
+            {{ form.name(size=32) }}
+            {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <hr>
+
+    {# Seção para listar os locais existentes #}
+    <h2>Meus Locais</h2>
+    {% if locations %}
+        <ul>
+        {# Loop para percorrer cada local na lista 'locations' que passamos pela rota #}
+        {% for location in locations %}
+            <li>
+                {{ location.name }}
+                {# Adicionar no botões de Editar e Excluir aqui depois #}
+            </li>
+        {% endfor %}    
+        </ul>
+    {% else %}
+        <p>Você ainda não adicionou nenhum local. Use o formulário acima para começar!</p>
+    {% endif %}
+{% endblock %}
