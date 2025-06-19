@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Página Inicial - GVA-WEB{% endblock %}
+
+{% block content %}
+    <h1>Bem-vindo ao GVA-WEB</h1>
+    <p>Seu gerenciador de validade de alimentos.</p>
+    {% if not current_user.is_authenticated %}
+    <p>
+        <a href="{{ url_for('auth.login') }}">Faça login</a>
+        <a href="{{ url_for('auth.register') }}">Crie uma conta</a> para começar.
+    </p>
+    {% endif %}
+{% endblock %}

@@ -1,11 +1,16 @@
 from datetime import datetime
-from app import db, login_manager
+from .extensions import db, login_manager, bcrypt
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
+
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    # ---- INÍCIO DO DEBUG ----
+    print(f"--- LOAD_USER: Tentando carregar o usuário com ID: {user_id} ---")
+    user = User.query.get(int(user_id))
+    print(f"--- LOAD_USER: Usuário encontrado no banco: {user} ---")
+    # ---- FIM DO DEBUG ----
+    return user
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -16,14 +21,11 @@ class User(UserMixin, db.Model):
     food_items = db.relationship('FoodItem', backref='owner', lazy='dynamic')
 
     def set_password(self, password):
-        # from app import bcrypt
-        # self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-        pass
-    
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+        
     def check_password(self, password):
-        # from app import bcrypt
-        # return bcrypt.check_password_hash(self.password_hash, password)
-        pass
+        return bcrypt.check_password_hash(self.password_hash, password)
+        
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -35,7 +37,7 @@ class Location(db.Model):
     food_items = db.relationship('FoodItem', backref='location_assigned', lazy='dynamic', cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f'<FoodItem {self.name}>'
+        return f'<Location {self.name}>'
     
 class FoodItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)

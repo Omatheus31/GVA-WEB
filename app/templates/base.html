@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GVA-WEB{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('main.index') }}">Home</a>
+        {% if current_user.is_authenticated %}
+            <span>Olá, {{ current_user.username }}!</span>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}">Login</a>
+            <a href="{{ url_for('auth.register')}}">Registrar</a>
+        {% endif %}
+    </nav>
+    <hr>
+    <main>
+        {# Esta seçaõ é para as mensagens flash (ex: "Login com sucesso") #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <u>
+                    class="flashes"
+                    {% for category, message in messages %}
+                        <li class="alert-{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </u>
+            {% endif %}
+        {% endwith %}
+
+        {# O conteúdo principal de cada página será inserido aqui #}
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025 GVA-WEB</p>
+    </footer>
+</body>
+</html>
