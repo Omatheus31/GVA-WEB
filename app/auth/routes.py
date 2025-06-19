@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user
-from ..extensions import db, bcrypt
+from ..extensions import db, bcrypt, recaptcha
 from app.models import User 
 from app.auth.forms import LoginForm, RegistrationForm 
 from app.auth import bp
@@ -13,7 +13,7 @@ def register():
     
     form = RegistrationForm()
     # Se o formulário for enviado e for válido
-    if form.validate_on_submit():
+    if form.validate_on_submit() and recaptcha.verify():
 
         user = User(username=form.username.data, email=form.email.data)
         

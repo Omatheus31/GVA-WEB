@@ -33,6 +33,11 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
+        <p>
+            {# LINHA CORRETA #}
+            {{ recaptcha }}
+        </p>
+
         <p>{{ form.submit() }}</p>
     </form>
     <p>Já tem uma conta? <a href="{{ url_for('auth.login') }}">Faça o login!</a></p>

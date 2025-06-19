@@ -18,3 +18,6 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['seu-email@exemplo.com']
     
+    # Configurações do reCAPTCHA
+    RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY')
+    RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')

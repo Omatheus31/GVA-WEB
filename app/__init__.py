@@ -1,6 +1,6 @@
 from flask import Flask
 from config import Config
-from .extensions import db, migrate, login_manager, bcrypt, csrf
+from .extensions import db, migrate, login_manager, bcrypt, csrf, recaptcha
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -12,6 +12,7 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     bcrypt.init_app(app)
     csrf.init_app(app)
+    recaptcha.init_app(app)
 
     # Configurações do Flask-Login
     login_manager.login_view = 'auth.login'
