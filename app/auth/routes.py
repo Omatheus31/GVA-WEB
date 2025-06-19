@@ -28,7 +28,6 @@ def register():
         return redirect(url_for('auth.login'))
     
     # Se a requisição for GET, apenas mostra a página com o formulário
-    print("Erros do formulário:", form.errors)
     return render_template('auth/register.html', title='Registrar', form=form)
 
 @bp.route('/login', methods=['GET', 'POST'])
@@ -43,12 +42,8 @@ def login():
         # Verifica se o usuário existe E se a senha digitada corresponde ao hash no banco
         if user and user.check_password(form.password.data):
             
-            print(f"--- LOGIN SUCESSO: Tentando logar o usuário ID: {user.id}, Nome: {user.username} ---")
-    
             login_user(user, remember=form.remember_me.data)
             
-            print(f"--- LOGIN_USER CHAMADO. current_user.is_authenticated AGORA É: {current_user.is_authenticated} ---")
-    
             # Redireciona para a página que o usuário tentava acessar antes de ser enviado para o login
             next_page = request.args.get('next')
             flash('Login realizado com sucesso!', 'success')

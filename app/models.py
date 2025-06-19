@@ -5,11 +5,7 @@ from flask_login import UserMixin
 
 @login_manager.user_loader
 def load_user(user_id):
-    # ---- INÍCIO DO DEBUG ----
-    print(f"--- LOAD_USER: Tentando carregar o usuário com ID: {user_id} ---")
     user = User.query.get(int(user_id))
-    print(f"--- LOAD_USER: Usuário encontrado no banco: {user} ---")
-    # ---- FIM DO DEBUG ----
     return user
 
 class User(UserMixin, db.Model):
