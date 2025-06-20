@@ -8,31 +8,81 @@
 
     {# Seção para adicionar um novo local #}
     <h2>Adicionar Novo Local</h2>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }} <p>
-            {{ form.name.label }}:
-            {{ form.name(size=32) }}
-            {% for error in form.name.errors %}
+    <form action="{{ url_for('main.dashboard') }}" method="post" novalidate>
+        {{ location_form.hidden_tag() }} 
+        <p>
+            {{ location_form.name.label }}:
+            {{ location_form.name(size=32) }}
+            {% for error in location_form.name.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p>{{ form.submit() }}</p>
+        <p>{{ location_form.submit_location() }}</p>
     </form>
     <hr>
 
-    {# Seção para listar os locais existentes #}
-    <h2>Meus Locais</h2>
+    {# Seção para adicionar um novo alimento #}
+    <h2>Adicionar Novo Alimento</h2>
+    <form action="{{ url_for('main.dashboard') }}" method="post" novalidate>
+        {{ food_form.hidden_tag() }}
+        <p>
+            {{ food_form.name.label }}:<br>
+            {{ food_form.name(size=32) }}
+        </p>
+        <p>
+            {{ food_form.quantity.label }}:<br>
+            {{ food_form.quantity(size=32) }}
+        </p>
+        <p>
+            {{ food_form.expiry_date.label }} (AAAA-MM-DD):<br>
+            {{ food_form.expiry_date() }}
+        </p>
+        <p>
+            {{ food_form.location.label }}:<br>
+            {{ food_form.location() }}
+        </p>
+        <p>{{ food_form.submit_food() }}</p>
+    </form>
+    <hr>
+
+    {# Seção para listar os alimentos e locais existentes #}
+    <h2>Meu Inventário</h2>
+
+    <h3>Locais</h3>
     {% if locations %}
         <ul>
-        {# Loop para percorrer cada local na lista 'locations' que passamos pela rota #}
         {% for location in locations %}
-            <li>
-                {{ location.name }}
-                {# Adicionar no botões de Editar e Excluir aqui depois #}
-            </li>
+            <li>{{ location.name }}</li>
         {% endfor %}    
         </ul>
     {% else %}
-        <p>Você ainda não adicionou nenhum local. Use o formulário acima para começar!</p>
+        <p>Você ainda não adicionou nenhum local.</p>
     {% endif %}
+
+    <h3>Alimentos</h3>
+    {% if food_items %}
+        <table border="1" style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Alimentos</th>
+                    <th>Quantidade</th>
+                    <th>Local</th>
+                    <th>Vence em</th>
+                </tr>
+            </thead>
+            <body>
+            {% for item in food_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.location_assigned.name if item.location_assigned else 'N/A' }}</td>
+                    <td>{{ item.expiry_date.strftime('%d/%m/%Y') }}</td>
+                </tr>
+            {% endfor %}
+            </body>
+        </table>
+    {% else %}
+        <p>Você ainda não adicionou nenhum alimento.</p>
+    {% endif %}
+
 {% endblock %}
