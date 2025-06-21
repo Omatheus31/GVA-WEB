@@ -28,3 +28,14 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Este email já está em uso. Por favor, escolha outro.')
+        
+class PasswordResetRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Pedir Redefinição de Senha')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Nova Senha', validators=[DataRequired(), Length(min=8)])
+    password2 = PasswordField(
+        'Repita a Nova Senha', validators=[DataRequired(), EqualTo('password', message='As senha devem ser iguais.')]
+    )
+    submit = SubmitField('Redefinir Senha')

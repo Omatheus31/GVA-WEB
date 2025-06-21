@@ -1,6 +1,9 @@
 from datetime import datetime
 from .extensions import db, login_manager, bcrypt
 from flask_login import UserMixin
+from flask import current_app
+import jwt
+import time
 
 
 @login_manager.user_loader
@@ -25,6 +28,26 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
+    
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            {'reset_password': self.id, 'exp': time.time() + expires_in},
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256'
+        )
+    
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(
+                token,
+                current_app.config['SECRET_KEY'],
+                algorithms=['HS256']
+            )['reset_password']
+        except: 
+            return None
+        
+        return User.query.get(id)
     
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
