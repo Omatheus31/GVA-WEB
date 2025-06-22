@@ -1,10 +1,19 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user
 from ..extensions import db, bcrypt, recaptcha
-from app.models import User 
+from app.models import User, AuditLog
 from app.auth.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, ResetPasswordForm 
 from app.auth import bp
 from .email import send_password_reset_email
+
+def log_audit(action, user_id=None, details=None):
+    log = AuditLog(
+        action=action,
+        user_id=user_id,
+        ip_address=request.remote_addr,
+        details=details
+    )
+    db.session.add(log)
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -40,16 +49,19 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
 
-        # Verifica se o usuário existe E se a senha digitada corresponde ao hash no banco
         if user and user.check_password(form.password.data):
-            
             login_user(user, remember=form.remember_me.data)
             
-            # Redireciona para a página que o usuário tentava acessar antes de ser enviado para o login
+            log_audit('LOGIN_SUCCESS', user_id=user.id, details=f"User '{user.username}' logged in successfully.")
+            db.session.commit()
+
             next_page = request.args.get('next')
             flash('Login realizado com sucesso!', 'success')
             return redirect(next_page) if next_page else redirect(url_for('main.index'))
         else:
+            log_audit('LOGIN_FAILED', details=f"Failed login attempt for username '{form.username.data}'.")
+            db.session.commit()
+
             flash('Login sem sucesso. Por favor, verifique seu usuário e senha.', 'danger')
         
     return render_template('auth/login.html', title='Login', form=form)

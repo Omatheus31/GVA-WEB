@@ -72,3 +72,17 @@ class FoodItem(db.Model):
 
     def __repr__(self):
         return f'<FoodItem {self.name}>'
+    
+class AuditLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    ip_address = db.Column(db.String(45))
+    action = db.Column(db.String(256), nullable=False)
+    details = db.Column(db.String(512), nullable=True)
+
+    user = db.relationship('User')
+
+    def __repr__(self):
+        return f'<AuditLog {self.timestamp} - {self.action}>'
+    
