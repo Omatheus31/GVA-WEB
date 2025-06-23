@@ -11,6 +11,7 @@
         {% if current_user.is_authenticated %}
             <span>Olá, {{ current_user.username }}!</span>
             <a href="{{ url_for('main.dashboard') }}">Meu Painel</a>
+            <a href="{{ url_for('main.tfa_setup') }}">Configurar 2FA</a>
             <a href="{{ url_for('auth.logout') }}">Logout</a>
         {% else %}
             <a href="{{ url_for('auth.login') }}">Login</a>

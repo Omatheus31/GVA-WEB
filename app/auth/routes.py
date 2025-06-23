@@ -1,10 +1,11 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, current_user
 from ..extensions import db, bcrypt, recaptcha
 from app.models import User, AuditLog
-from app.auth.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, ResetPasswordForm 
+from app.auth.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, ResetPasswordForm, TwoFactorVerifyForm 
 from app.auth import bp
 from .email import send_password_reset_email
+import pyotp
 
 def log_audit(action, user_id=None, details=None):
     log = AuditLog(
@@ -50,11 +51,15 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
 
         if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
             
+            if user.tfa_enabled:
+                session['2fa_user_id'] = user.id
+                session['2fa_remember_me'] = form.remember_me.data
+                return redirect(url_for('auth.tfa_verify'))
+
+            login_user(user, remember=form.remember_me.data)
             log_audit('LOGIN_SUCCESS', user_id=user.id, details=f"User '{user.username}' logged in successfully.")
             db.session.commit()
-
             next_page = request.args.get('next')
             flash('Login realizado com sucesso!', 'success')
             return redirect(next_page) if next_page else redirect(url_for('main.index'))
@@ -104,3 +109,33 @@ def reset_password(token):
         return redirect(url_for('auth.login'))
     
     return render_template('auth/reset_password.html', title="Redefinir Senha", form=form)
+
+@bp.route('/2fa_verify', methods=['GET', 'POST'])
+def tfa_verify():
+    if '2fa_user_id' not in session:
+        return redirect(url_for('auth.login'))
+    
+    user = User.query.get(session['2fa_user_id'])
+    if not user:
+        return redirect(url_for('auth.login'))
+    
+    form = TwoFactorVerifyForm()
+    if form.validate_on_submit():
+        totp = pyotp.TOTP(user.tfa_secret)
+        if totp.verify(form.code.data):
+            remember = session.get('2fa_remember_me', False)
+            login_user(user, remember=remember)
+
+            log_audit('2FA_SUCCESS', user_id=user.id, details=f"User '{user.username}' completed 2FA.")
+            db.session.commit()
+
+            session.pop('2fa_user_id')
+            session.pop('2fa_remember_me')
+
+            next_page = request.args.get('next')
+            flash('Login realizado com sucesso!', 'success')
+            return redirect(next_page) if next_page else redirect(url_for('main.index'))
+        else:
+            flash('Código 2FA inválido.', 'danger')
+    
+    return render_template('auth/2fa_verify.html', form=form)

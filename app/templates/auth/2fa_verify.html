@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Verificação de Dois Fatores{% endblock %}
+
+{% block content %}
+    <h1>Verificação de Dois Fatores</h1>
+    <p>Por favor, insira o código do seu aplicativo autenticador.</p>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.code.label }}<br>
+            {{ form.code(size=6, maxlength=6) }}<br>
+            {% for error in form.code.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

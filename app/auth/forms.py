@@ -39,3 +39,11 @@ class ResetPasswordForm(FlaskForm):
         'Repita a Nova Senha', validators=[DataRequired(), EqualTo('password', message='As senha devem ser iguais.')]
     )
     submit = SubmitField('Redefinir Senha')
+
+class TwoFactorForm(FlaskForm):
+    code = StringField('Código de 6 dígitos', validators=[DataRequired(), Length(min=6, max=6)])
+    submit = SubmitField('Verificar e Ativar')
+
+class TwoFactorVerifyForm(FlaskForm):
+    code = StringField('Código', validators=[DataRequired(), Length(min=6, max=6)])
+    submit = SubmitField('Verificar Código')

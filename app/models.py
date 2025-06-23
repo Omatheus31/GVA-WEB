@@ -16,6 +16,10 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(256))
+    
+    tfa_secret = db.Column(db.String(32), nullable=True)
+    tfa_enabled = db.Column(db.Boolean, nullable=False, server_default='false')
+
     locations = db.relationship('Location', backref='owner', lazy='dynamic')
     food_items = db.relationship('FoodItem', backref='owner', lazy='dynamic')
 
