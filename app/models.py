@@ -33,7 +33,12 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f'<User {self.username}>'
     
-    def get_reset_password_token(self, expires_in=600):
+    def get_reset_password_token(self):
+        """
+        Gera um token JWT seguro que contém o ID do usuário e um tempo de expiração.
+        O token é assinado com a SECRET_KEY da aplicação para garantir sua autenticidade.
+        """
+        expires_in = current_app.config['PASSWORD_RESET_TOKEN_EXPIRES']
         return jwt.encode(
             {'reset_password': self.id, 'exp': time.time() + expires_in},
             current_app.config['SECRET_KEY'],

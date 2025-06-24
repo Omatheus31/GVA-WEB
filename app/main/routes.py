@@ -53,7 +53,8 @@ def dashboard():
         flash('Novo alimento adicionado com sucesso!', 'success')
         return redirect(url_for('main.dashboard'))
         
-    # Busca dos dados para exibir na página
+    # Filtra os locais para mostrar APENAS os que pertencem ao usuário logado.
+    # Esta é a implementação da Autorização
     locations = Location.query.filter_by(user_id=current_user.id).order_by('name').all()
     food_items = FoodItem.query.filter_by(user_id=current_user.id).order_by(FoodItem.expiry_date).all()
 

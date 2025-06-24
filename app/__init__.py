@@ -29,8 +29,10 @@ def create_app(config_class=Config):
 
     @app.after_request
     def add_security_headers(response):
+        # Adiciona cabeçalhos de segurança em todas as respostas HTTP
+        # para fortalecer a aplicação contra ataques comuns como XSS e Clickjacking.
         csp = (
-            "default-src 'self';"
+            "default-src 'self';" # Padrão: só permite conteúdo do próprio domínio
             "script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/;"
             "style-src 'self';"
             "img-src 'self' data:;"

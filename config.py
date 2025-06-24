@@ -21,3 +21,5 @@ class Config:
     # Configurações do reCAPTCHA
     RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY')
     RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')
+
+    PASSWORD_RESET_TOKEN_EXPIRES = 600
