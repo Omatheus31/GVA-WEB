@@ -34,7 +34,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        # Mostar uma mensagem de sucesso e redireciona para o login
+        # Mosta uma mensagem de sucesso e redireciona para o login
         flash('Sua conta foi criada com sucesso! Agora você pode fazer o login.', 'success')
         return redirect(url_for('auth.login'))
     
@@ -81,6 +81,7 @@ def logout():
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
+    
     form = PasswordResetRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -105,7 +106,7 @@ def reset_password(token):
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        flash('Sua senha foi redefinida com suceeso! Você já pode fazer o login', 'success')
+        flash('Sua senha foi redefinida com sucesso! Você já pode fazer o login', 'success')
         return redirect(url_for('auth.login'))
     
     return render_template('auth/reset_password.html', title="Redefinir Senha", form=form)
