@@ -38,6 +38,17 @@ def register():
         flash('Sua conta foi criada com sucesso! Agora você pode fazer o login.', 'success')
         return redirect(url_for('auth.login'))
     
+    
+
+    if request.method == 'POST':
+        print("--- ERROS DO FORMULÁRIO DE REGISTRO:", form.errors)
+        if not recaptcha.verify():
+            print("--- A VERIFICAÇÃO DO RECAPTCHA FALHOU ---")
+
+    return render_template('auth/register.html', title='Registrar', form=form)
+
+
+
     # Se a requisição for GET, apenas mostra a página com o formulário
     return render_template('auth/register.html', title='Registrar', form=form)
 

@@ -32,13 +32,13 @@ def create_app(config_class=Config):
         # Adiciona cabeçalhos de segurança em todas as respostas HTTP
         # para fortalecer a aplicação contra ataques comuns como XSS e Clickjacking.
         csp = (
-            "default-src 'self';" # Padrão: só permite conteúdo do próprio domínio
-            "script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/;"
-            "style-src 'self';"
+            "default-src 'self';"
+            "script-src 'self' http://www.google.com/recaptcha/ https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/;"
+            "style-src 'self' 'unsafe-inline';"
             "img-src 'self' data:;"
             "font-src 'self';"
             "object-src 'none';"
-            "frame-src 'self' https://www.google.com/recaptcha/;"
+            "frame-src 'self' http://www.google.com/recaptcha/ https://www.google.com/recaptcha/;"
             "base-uri 'self';"
             "form-action 'self';"
             "frame-ancestors 'none';"
