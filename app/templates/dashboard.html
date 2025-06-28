@@ -50,11 +50,30 @@
 
     <h3>Locais</h3>
     {% if locations %}
-        <ul>
-        {% for location in locations %}
-            <li>{{ location.name }}</li>
-        {% endfor %}    
-        </ul>
+        <table border="1" style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="width:70%;">Nome do Local</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for location in locations %}
+                <tr>
+                    <td>{{ location.name }}</td>
+                    <td>
+                        <a href="{{ url_for('main.edit_location', location_id=location.id) }}">Editar</a>
+
+                        <form action="{{ url_for('main.delete_location', location_id=location.id) }}" method="post" style="display:inline; margin-left:10px;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="submit" value="Excluir"
+                                onclick="return confirm('Tem certeza que deseja excluir este local? Todos os alimentos dentro dele também serão apagados.');">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% else %}
         <p>Você ainda não adicionou nenhum local.</p>
     {% endif %}

@@ -105,3 +105,47 @@ def tfa_setup():
 
     return render_template('2fa_setup.html', title='Configurar 2FA',
                            form=form, qr_code_data=qr_code_data)
+
+@bp.route('/location/<int:location_id>/delete', methods=['POST'])
+@login_required
+def delete_location(location_id):
+    location = Location.query.get_or_404(location_id)
+
+    # AUTORIZAÇÃO: Garante que o usuário só pode apagar seus próprios locais
+    if location.owner != current_user:
+        flash('Operação não permitida.', 'danger')
+        return redirect(url_for('main'))
+    
+    db.session.delete(location)
+    db.session.commit()
+    flash('Local excluído com sucesso!', 'success')
+    return redirect(url_for('main.dashboard'))
+
+
+@bp.route('/location/<int:location_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_location(location_id):
+    location = Location.query.get_or_404(location_id)
+
+    # AUTRORIZAÇÃO: Garante que o usuário só pode editar seus prórpios locais
+    if location.owner != current_user:
+        flash('Operação não permitida.', 'danger')
+        return redirect(url_for('main.dashboard'))
+    
+    form = LocationForm()
+    if form.validate_on_submit():
+        # Lógica para evitar nomes duplicados, igual à da criação
+        existing_location = Location.query.filter(Location.id != location_id, Location.user_id == current_user.id, Location.name == form.name.data).first()
+        if existing_location:
+            flash('Você já tem um local com este nome.', 'warning')
+        else:
+            location.name = form.name.data
+            db.session.commit()
+            flash('Seu local foi atualizado com sucesso!', 'success')
+            return redirect(url_for('main.dashboard'))
+        
+    elif request.method == 'GET':
+        # Pré-preenche o formulário com o nome atual do local
+        form.name.data = location.name
+    
+    return render_template('edit_location.html', title='Editar Local', form=form)
