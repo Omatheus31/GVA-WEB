@@ -149,3 +149,52 @@ def edit_location(location_id):
         form.name.data = location.name
     
     return render_template('edit_location.html', title='Editar Local', form=form)
+
+@bp.route('/food_item/<int:item_id>/delete', methods=['POST'])
+@login_required
+def delete_food_item(item_id):
+    item = FoodItem.query.get_or_404(item_id)
+
+    # AUTORIZAÇÃO: Garante que o usuário só pode apagar seus próprios itens
+    if item.owner != current_user:
+        flash('Operação não permitida.', 'danger')
+        return redirect(url_for('main.dashboard'))
+    
+    db.session.delete(item)
+    db.session.commit()
+    flash('Alimento excluído com sucesso!', 'success')
+    return redirect(url_for('main.dashboard'))
+
+
+@bp.route('/food_item/<int:item_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_food_item(item_id):
+    item = FoodItem.query.get_or_404(item_id)
+
+    # AUTORIZAÇÃO: Garante que o usuário só pode editar seus próprios itens
+    if item.owner != current_user:
+        flash('Operação não permitida.', 'danger')
+        return redirect(url_for('main.dashboard'))
+    
+    form = FoodItemForm()
+
+    # Popula o dropdown de locais
+    form.location.choices = [(loc.id, loc.name) for loc in Location.query.filter_by(user_id=current_user.id).order_by('name').all()]
+
+    if form.validate_on_submit():
+        item.name = form.name.data
+        item.quantity = form.quantity.data
+        item.expiry_date = form.expiry_date.data
+        item.location_id = form.location.data
+        db.session.commit()
+        flash('Seu alimento foi atualizado com sucesso!', 'success')       
+        return redirect(url_for('main.dashboard'))
+    elif request.method == 'GET':
+        # Pré-preenche o formulário com os dados atuais do item
+        form.name.data = item.name
+        form.quantity.data = item.quantity
+        form.expiry_date.data = item.expiry_date
+        form.location.data = item.location_id
+
+    return render_template('edit_food_item.html', title='Editar Alimento', form=form)
+

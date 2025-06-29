@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Alimento{% endblock %}
+
+{% block content %}
+    <h1>Editar Alimento: {{ form.name.data }}</h1>
+    <hr>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.name.label }}:<br>
+            {{ form.name(size=32) }}
+        </p>
+        <p>
+            {{ form.quantity.label }}:<br>
+            {{ form.quantity(size=32) }}
+        </p>
+        <p>
+            {{ form.expiry_date.label }} (AAAA-MM-DD):<br>
+            {{ form.expiry_date() }}
+        </p>
+        <p>
+            {{ form.location.label }}:<br>
+            {{ form.location() }} {# Dropdown de locais #}
+        </p>
+        <p>{{ form.submit_food() }}</p>
+    </form>
+    <hr>
+    <a href="{{ url_for('main.dashboard') }}">Cancelar e voltar para o Painel</a>
+{% endblock %}
