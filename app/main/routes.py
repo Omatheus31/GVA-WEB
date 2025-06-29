@@ -197,4 +197,3 @@ def edit_food_item(item_id):
         form.location.data = item.location_id
 
     return render_template('edit_food_item.html', title='Editar Alimento', form=form)
-

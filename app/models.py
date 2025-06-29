@@ -20,6 +20,8 @@ class User(UserMixin, db.Model):
     tfa_secret = db.Column(db.String(32), nullable=True)
     tfa_enabled = db.Column(db.Boolean, nullable=False, server_default='false')
 
+    is_admin = db.Column(db.Boolean, nullable=False, server_default='false')
+
     locations = db.relationship('Location', backref='owner', lazy='dynamic')
     food_items = db.relationship('FoodItem', backref='owner', lazy='dynamic')
 

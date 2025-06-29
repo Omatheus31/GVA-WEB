@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Painel do Administrador{% endblock %}
+
+{% block content %}
+    <h1>Painel do Administrador</h1>
+    <p>Bem-vindo, {{ current_user.username }}. Esta é a área restrita para administradores.</p>
+    <hr>
+    <h3>Ferramentas Administrativas</h3>
+    <ul>
+        <li><a href="{{ url_for('admin.audit_log') }}">Ver Log de Auditoria Completo</a></li>
+        <li><a href="{{ url_for('admin.users_list') }}">Ver Lista de Usuários</a></li>
+    </ul>
+{% endblock %}

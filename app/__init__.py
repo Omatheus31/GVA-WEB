@@ -27,6 +27,9 @@ def create_app(config_class=Config):
     from .auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
+    from .admin import bp as admin_bp
+    app.register_blueprint(admin_bp, url_prefix='/admin')
+
     @app.after_request
     def add_security_headers(response):
         # Adiciona cabeçalhos de segurança em todas as respostas HTTP
