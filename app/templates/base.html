@@ -19,20 +19,16 @@
         {% endif %}
     </nav>
     <hr>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flashes">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
     <main>
-        {# Esta seçaõ é para as mensagens flash (ex: "Login com sucesso") #}
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <u>
-                    class="flashes"
-                    {% for category, message in messages %}
-                        <li class="alert-{{ category }}">{{ message }}</li>
-                    {% endfor %}
-                </u>
-            {% endif %}
-        {% endwith %}
-
-        {# O conteúdo principal de cada página será inserido aqui #}
         {% block content %}{% endblock %}
     </main>
     <footer>
