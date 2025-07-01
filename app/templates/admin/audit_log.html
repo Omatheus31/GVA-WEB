@@ -2,34 +2,46 @@
 
 {% block title %}Log de Auditoria{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_audit_log.css') }}">
+{% endblock %}
+
 {% block content %}
-    <h1>Log de Auditoria do Sistema</h1>
-    <a href="{{ url_for('admin.dashboard') }}">&larr; Voltar para o Painel Admin</a>
+<div class="admin-audit-container">
+    <header class="audit-header">
+        <h1>Log de Auditoria do Sistema</h1>
+        <a href="{{ url_for('admin.dashboard') }}" class="back-link">&larr; Voltar para o Painel Admin</a>
+    </header>
+
     <hr>
-    <table border="1" style="width:100%; border-collapse: collapse;">
-        <thead>
-            <tr>
-                <th>Data/Hora (UTC)</th>
-                <th>Usuário</th>
-                <th>Endereço IP</th>
-                <th>Ação</th>
-                <th>Detalhes</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for log in logs %}
-            <tr>
-                <td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}</td>
-                <td>{{ log.user.username if log.user else 'N/A (Sistema ou Anônimo)' }}</td>
-                <td>{{ log.ip_address }}</td>
-                <td>{{ log.action }}</td>
-                <td>{{ log.details if log.details else '' }}</td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="5">Nenhum registro de auditoria encontrado.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    <div class="table-wrapper">
+        <table class="audit-table" aria-label="Log de Auditoria do Sistema">
+            <thead>
+                <tr>
+                    <th>Data/Hora (UTC)</th>
+                    <th>Usuário</th>
+                    <th>Endereço IP</th>
+                    <th>Ação</th>
+                    <th>Detalhes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                    <td>{{ log.user.username if log.user else 'N/A (Sistema ou Anônimo)' }}</td>
+                    <td>{{ log.ip_address }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.details if log.details else '' }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="no-records">Nenhum registro de auditoria encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

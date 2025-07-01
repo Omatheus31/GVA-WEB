@@ -2,34 +2,46 @@
 
 {% block title %}Lista de Usuários{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_users_list.css') }}">
+{% endblock %}
+
 {% block content %}
-    <h1>Lista de Usuários do Sistema</h1>
-    <a href="{{ url_for('admin.dashboard') }}">&larr; Voltar para o Painel Admin</a>
+<div class="admin-users-container">
+    <header class="users-header">
+        <h1>Lista de Usuários do Sistema</h1>
+        <a href="{{ url_for('admin.dashboard') }}" class="back-link">&larr; Voltar para o Painel Admin</a>
+    </header>
+
     <hr>
-    <table border="1" style="width:100%; border-collapse: collapse;">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Admin?</th>
-                <th>2FA Ativo?</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ 'Sim' if user.is_admin else 'Não' }}</td>
-                <td>{{ 'Sim' if user.tfa_enabled else 'Não' }}</td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="5">Nenhum usuário encontrado.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    <div class="table-wrapper">
+        <table class="users-table" aria-label="Lista de Usuários do Sistema">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Admin?</th>
+                    <th>2FA Ativo?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ 'Sim' if user.is_admin else 'Não' }}</td>
+                    <td>{{ 'Sim' if user.tfa_enabled else 'Não' }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="no-records">Nenhum usuário encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

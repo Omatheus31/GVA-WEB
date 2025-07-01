@@ -2,29 +2,31 @@
 
 {% block title %}Editar Alimento{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_forms.css') }}">
+{% endblock %}
+
 {% block content %}
+<div class="edit-form-container">
     <h1>Editar Alimento: {{ form.name.data }}</h1>
     <hr>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.name.label }}:<br>
-            {{ form.name(size=32) }}
-        </p>
-        <p>
-            {{ form.quantity.label }}:<br>
-            {{ form.quantity(size=32) }}
-        </p>
-        <p>
-            {{ form.expiry_date.label }} (AAAA-MM-DD):<br>
-            {{ form.expiry_date() }}
-        </p>
-        <p>
-            {{ form.location.label }}:<br>
-            {{ form.location() }} {# Dropdown de locais #}
-        </p>
-        <p>{{ form.submit_food() }}</p>
+        <label for="{{ form.name.id }}">{{ form.name.label.text }}:</label>
+        {{ form.name(size=32, id=form.name.id) }}
+
+        <label for="{{ form.quantity.id }}">{{ form.quantity.label.text }}:</label>
+        {{ form.quantity(size=32, id=form.quantity.id) }}
+
+        <label for="{{ form.expiry_date.id }}">{{ form.expiry_date.label.text }} (AAAA-MM-DD):</label>
+        {{ form.expiry_date(id=form.expiry_date.id) }}
+
+        <label for="{{ form.location.id }}">{{ form.location.label.text }}:</label>
+        {{ form.location(id=form.location.id) }}
+
+        {{ form.submit_food(class_="") }}
     </form>
     <hr>
     <a href="{{ url_for('main.dashboard') }}">Cancelar e voltar para o Painel</a>
+</div>
 {% endblock %}

@@ -2,13 +2,35 @@
 
 {% block title %}Painel do Administrador{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+{% endblock %}
+
 {% block content %}
-    <h1>Painel do Administrador</h1>
-    <p>Bem-vindo, {{ current_user.username }}. Esta é a área restrita para administradores.</p>
-    <hr>
-    <h3>Ferramentas Administrativas</h3>
-    <ul>
-        <li><a href="{{ url_for('admin.audit_log') }}">Ver Log de Auditoria Completo</a></li>
-        <li><a href="{{ url_for('admin.users_list') }}">Ver Lista de Usuários</a></li>
-    </ul>
+<div class="admin-dashboard-container">
+    <header class="admin-header">
+        <h1>Painel do Administrador</h1>
+        <p>Bem-vindo, <span class="username">{{ current_user.username }}</span>. Esta é a área restrita para administradores.</p>
+    </header>
+
+    <section class="admin-tools">
+        <h2>Ferramentas Administrativas</h2>
+        <div class="tools-list">
+            <a href="{{ url_for('admin.audit_log') }}" class="tool-card">
+                <div class="icon">📜</div>
+                <div class="tool-info">
+                    <h3>Log de Auditoria</h3>
+                    <p>Visualize o histórico completo de ações no sistema.</p>
+                </div>
+            </a>
+            <a href="{{ url_for('admin.users_list') }}" class="tool-card">
+                <div class="icon">👥</div>
+                <div class="tool-info">
+                    <h3>Lista de Usuários</h3>
+                    <p>Gerencie os usuários cadastrados no sistema.</p>
+                </div>
+            </a>
+        </div>
+    </section>
+</div>
 {% endblock %}

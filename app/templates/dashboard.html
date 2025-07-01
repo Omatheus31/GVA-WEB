@@ -1,115 +1,134 @@
 {% extends "base.html" %}
 
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
 {% block title %}Meu Painel - GVA-WEB{% endblock %}
 
 {% block content %}
-    <h1>Meu Painel de Controle</h1>
-    <hr>
+<h1>Meu Painel de Controle</h1>
+<hr>
 
-    {# Seção para adicionar um novo local #}
-    <h2>Adicionar Novo Local</h2>
-    <form action="{{ url_for('main.dashboard') }}" method="post" novalidate>
-        {{ location_form.hidden_tag() }} 
-        <p>
-            {{ location_form.name.label }}:
-            {{ location_form.name(size=32) }}
-            {% for error in location_form.name.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ location_form.submit_location() }}</p>
-    </form>
-    <hr>
+<div class="dashboard-grid">
 
-    {# Seção para adicionar um novo alimento #}
-    <h2>Adicionar Novo Alimento</h2>
-    <form action="{{ url_for('main.dashboard') }}" method="post" novalidate>
-        {{ food_form.hidden_tag() }}
-        <p>
-            {{ food_form.name.label }}:<br>
-            {{ food_form.name(size=32) }}
-        </p>
-        <p>
-            {{ food_form.quantity.label }}:<br>
-            {{ food_form.quantity(size=32) }}
-        </p>
-        <p>
-            {{ food_form.expiry_date.label }} (AAAA-MM-DD):<br>
-            {{ food_form.expiry_date() }}
-        </p>
-        <p>
-            {{ food_form.location.label }}:<br>
-            {{ food_form.location() }}
-        </p>
-        <p>{{ food_form.submit_food() }}</p>
-    </form>
-    <hr>
+    <!-- Coluna esquerda: formulários -->
+    <section class="dashboard-forms">
 
-    {# Seção para listar os alimentos e locais existentes #}
-    <h2>Meu Inventário</h2>
+        <div class="card">
+            <h2>Adicionar Novo Local</h2>
+            <form action="{{ url_for('main.dashboard') }}" method="post" novalidate>
+                {{ location_form.hidden_tag() }}
+                <p>
+                    {{ location_form.name.label }}:
+                    {{ location_form.name(size=32) }}
+                    {% for error in location_form.name.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>{{ location_form.submit_location() }}</p>
+            </form>
+        </div>
 
-    <h3>Locais</h3>
-    {% if locations %}
-        <table border="1" style="width:100%; border-collapse: collapse;">
-            <thead>
-                <tr>
-                    <th style="width:70%;">Nome do Local</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for location in locations %}
-                <tr>
-                    <td>{{ location.name }}</td>
-                    <td>
-                        <a href="{{ url_for('main.edit_location', location_id=location.id) }}">Editar</a>
+        <div class="card">
+            <h2>Adicionar Novo Alimento</h2>
+            <form action="{{ url_for('main.dashboard') }}" method="post" novalidate>
+                {{ food_form.hidden_tag() }}
+                <p>
+                    {{ food_form.name.label }}:<br>
+                    {{ food_form.name(size=32) }}
+                </p>
+                <p>
+                    {{ food_form.quantity.label }}:<br>
+                    {{ food_form.quantity(size=32) }}
+                </p>
+                <p>
+                    {{ food_form.expiry_date.label }} (AAAA-MM-DD):<br>
+                    {{ food_form.expiry_date() }}
+                </p>
+                <p>
+                    {{ food_form.location.label }}:<br>
+                    {{ food_form.location() }}
+                </p>
+                <p>{{ food_form.submit_food() }}</p>
+            </form>
+        </div>
 
-                        <form action="{{ url_for('main.delete_location', location_id=location.id) }}" method="post" style="display:inline; margin-left:10px;">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="submit" value="Excluir"
-                                onclick="return confirm('Tem certeza que deseja excluir este local? Todos os alimentos dentro dele também serão apagados.');">
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Você ainda não adicionou nenhum local.</p>
-    {% endif %}
+    </section>
 
-    <h3>Alimentos</h3>
-    {% if food_items %}
-        <table border="1" style="width:100%; border-collapse: collapse;">
-            <thead>
-                <tr>
-                    <th>Alimentos</th>
-                    <th>Quantidade</th>
-                    <th>Local</th>
-                    <th>Vence em</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <body>
-            {% for item in food_items %}
-                <tr>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.location_assigned.name if item.location_assigned else 'N/A' }}</td>
-                    <td>{{ item.expiry_date.strftime('%d/%m/%Y') }}</td>
-                    <td>
-                        <a href="{{ url_for('main.edit_food_item', item_id=item.id) }}">Editar</a>
-                        <form action="{{ url_for('main.delete_food_item', item_id=item.id) }}" method="post" style="display:inline; margin-left:10px;">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="submit" value="Excluir" onclick="return confirm('Tem certeza que deseja excluir este alimento?');">
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-            </body>
-        </table>
-    {% else %}
-        <p>Você ainda não adicionou nenhum alimento.</p>
-    {% endif %}
+    <!-- Coluna direita: inventário -->
+    <section class="dashboard-inventory">
 
+        <div class="card">
+            <h2>Locais</h2>
+            {% if locations %}
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:70%;">Nome do Local</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for location in locations %}
+                    <tr>
+                        <td>{{ location.name }}</td>
+                        <td>
+                            <div class="actions-container">
+                                <a href="{{ url_for('main.edit_location', location_id=location.id) }}" role="button" class="secondary outline">Editar</a>
+
+                                <form action="{{ url_for('main.delete_location', location_id=location.id) }}" method="post">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="secondary outline"
+                                            onclick="return confirm('Tem certeza que deseja excluir este local? Todos os alimentos dentro dele também serão apagados.');">
+                                        Excluir
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Você ainda não adicionou nenhum local.</p>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <h2>Alimentos</h2>
+            <div class="food-grid">
+                {% if food_items %}
+                    {% for item in food_items %}
+                    <article class="food-card">
+                        <div class="item-title">{{ item.name }}</div>
+                        <div class="item-quantity">{{ item.quantity if item.quantity else 'N/A' }}</div>
+                        <div class="item-expiry">
+                            Vence em: <strong>{{ item.expiry_date.strftime('%d/%m/%Y') }}</strong>
+                        </div>
+                        <small class="text-muted">
+                            Local: {{ item.location_assigned.name if item.location_assigned else 'N/A' }}
+                        </small>
+
+                        <footer style="margin-top: 1rem;">
+                            <div class="actions-container">
+                                <a href="{{ url_for('main.edit_food_item', item_id=item.id) }}" role="button" class="secondary outline">Editar</a>
+
+                                <form action="{{ url_for('main.delete_food_item', item_id=item.id) }}" method="post">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="secondary outline" onclick="return confirm('Tem certeza que deseja excluir este alimento?');">Excluir</button>
+                                </form>
+                            </div>
+                        </footer>
+                    </article>
+                    {% endfor %}
+                {% else %}
+                    <p>Você ainda não adicionou nenhum alimento.</p>
+                {% endif %}
+            </div>
+        </div>
+
+    </section>
+
+</div>
 {% endblock %}

@@ -2,25 +2,28 @@
 
 {% block title %}Configurar 2FA{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/2fa_setup.css') }}">
+{% endblock %}
+
 {% block content %}
+<div class="two-factor-container">
     <h1>Configurar Autenticação de Dois Fatores (2FA)</h1>
     <p>Para ativar o 2FA, escaneie o QR Code abaixo com seu aplicativo autenticador (Google Authenticator, Authy, etc.).</p>
     <p>Depois, insira o código de 6 dígitos gerado pelo aplicativo para verificar e concluir a configuração.</p>
 
-    {# Exibe a imagem do QR Code #}
     <img src="data:image/png;base64,{{ qr_code_data }}" alt="QR Code para 2FA">
 
     <hr>
 
     <form method="POST" action="">
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.code.label }}<br>
-            {{ form.code(size=6, maxlength=6) }}
-            {% for error in form.code.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
+        <label for="{{ form.code.id }}">{{ form.code.label.text }}</label>
+        {{ form.code(size=6, maxlength=6, id=form.code.id) }}
+        {% for error in form.code.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        <input type="submit" value="Verificar Código">
     </form>
+</div>
 {% endblock %}

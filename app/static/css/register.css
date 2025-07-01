@@ -1,0 +1,196 @@
+/* ================================
+   Paleta de Cores e Variáveis
+   ================================ */
+:root {
+  --background-main: #232323;
+  --background-card: #2e2e2e;
+  --primary-green: #32CD32;
+  --primary-green-hover: #27b227;
+  --input-bg: #232323;
+  --input-border: #444;
+  --input-focus: #32CD32;
+  --text-main: #f5f5f5;
+  --text-muted: #bdbdbd;
+  --danger: #ff4d4d;
+}
+
+/* ================================
+   Reset básico para consistência
+   ================================ */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--background-main);
+  color: var(--text-main);
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ================================
+   Centralização do container
+   ================================ */
+#register-container {
+  background: var(--background-card);
+  max-width: 370px;
+  margin: 4.5rem auto 3rem auto;
+  padding: 2.2rem 2rem 2rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.16);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  #register-container {
+    max-width: 97vw;
+    padding: 1.3rem 0.4rem 1.5rem 0.4rem;
+  }
+}
+
+/* ================================
+   Título
+   ================================ */
+#register-container h1 {
+  color: var(--text-main);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.8rem;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+/* ================================
+   Formulário e campos
+   ================================ */
+#register-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+/* Parágrafos que envolvem os campos para espaçamento */
+#register-container form p {
+  margin: 0;
+}
+
+/* Labels */
+#register-container label {
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  margin-top: 0.6rem;
+  letter-spacing: 0.01em;
+  display: block;
+}
+
+/* Inputs de texto, email e senha */
+#register-container input[type="text"],
+#register-container input[type="email"],
+#register-container input[type="password"] {
+  width: 100%;
+  background: var(--input-bg);
+  color: var(--text-main);
+  border: 1.5px solid var(--input-border);
+  border-radius: 12px;
+  padding: 0.7em 1em;
+  font-size: 1rem;
+  margin-bottom: 0.1rem;
+  transition: border 0.18s, background 0.18s;
+  outline: none;
+  box-sizing: border-box;
+}
+
+#register-container input[type="text"]:focus,
+#register-container input[type="email"]:focus,
+#register-container input[type="password"]:focus {
+  border-color: var(--input-focus);
+  background: #232b23;
+}
+
+/* Botão de submit */
+#register-container input[type="submit"] {
+  width: 100%;
+  background: var(--primary-green);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.07rem;
+  font-weight: 600;
+  padding: 0.8em 1em;
+  margin-top: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 12px 0 rgba(50,205,50,0.09);
+  transition: background 0.18s, box-shadow 0.18s;
+}
+
+#register-container input[type="submit"]:hover,
+#register-container input[type="submit"]:focus {
+  background: var(--primary-green-hover);
+  box-shadow: 0 4px 18px 0 rgba(50,205,50,0.14);
+}
+
+/* ================================
+   Links abaixo do formulário
+   ================================ */
+#register-container p:last-of-type {
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  margin-top: 1.1rem;
+  text-align: center;
+}
+
+/* Links */
+#register-container a {
+  color: var(--primary-green);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  border-radius: 6px;
+  padding: 0.1em 0.3em;
+  transition: background 0.16s, color 0.16s;
+}
+
+#register-container a:hover,
+#register-container a:focus {
+  background: var(--primary-green);
+  color: #232323;
+  text-decoration: none;
+}
+
+/* ================================
+   Mensagens de erro dos campos
+   ================================ */
+#register-container span[style*="color: red"] {
+  color: var(--danger) !important;
+  font-size: 0.97rem;
+  margin-top: 0.1em;
+  display: block;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* ================================
+   Ajuste do reCAPTCHA
+   ================================ */
+#register-container .g-recaptcha {
+  margin: 1rem 0 0.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* ================================
+   Ajustes para responsividade
+   ================================ */
+@media (max-width: 400px) {
+  #register-container {
+    padding: 0.7rem 0.1rem 1rem 0.1rem;
+    font-size: 0.98rem;
+  }
+}

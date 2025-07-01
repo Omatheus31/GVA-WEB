@@ -2,18 +2,23 @@
 
 {% block title %}Verificação de Dois Fatores{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/2fa_verify.css') }}">
+{% endblock %}
+
 {% block content %}
+<div class="two-factor-container">
     <h1>Verificação de Dois Fatores</h1>
     <p>Por favor, insira o código do seu aplicativo autenticador.</p>
+
     <form action="" method="post">
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.code.label }}<br>
-            {{ form.code(size=6, maxlength=6) }}<br>
-            {% for error in form.code.errors %}
+        <label for="{{ form.code.id }}">{{ form.code.label.text }}</label>
+        {{ form.code(size=6, maxlength=6, id=form.code.id) }}
+        {% for error in form.code.errors %}
             <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
+        {% endfor %}
+        <input type="submit" value="Verificar Código">
     </form>
+</div>
 {% endblock %}

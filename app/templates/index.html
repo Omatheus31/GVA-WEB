@@ -1,14 +1,31 @@
 {% extends "base.html" %}
 
-{% block title %}Página Inicial - GVA-WEB{% endblock %}
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+
+{% block title %}Bem-vindo ao GVA-WEB{% endblock %}
 
 {% block content %}
-    <h1>Bem-vindo ao GVA-WEB</h1>
-    <p>Seu gerenciador de validade de alimentos.</p>
-    {% if not current_user.is_authenticated %}
-    <p>
-        <a href="{{ url_for('auth.login') }}">Faça login</a>
-        <a href="{{ url_for('auth.register') }}">Crie uma conta</a> para começar.
+<div class="hero-section">
+
+    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="GVA-WEB Logo" class="hero-logo">
+
+    <h1 class="hero-title">Nunca mais perca um alimento por validade.</h1>
+    <p class="hero-tagline">
+        GVA-WEB é a sua ferramenta simples e inteligente para gerenciar o inventário da sua casa e reduzir o desperdício.
     </p>
+
+    {% if not current_user.is_authenticated %}
+        <div class="hero-cta">
+            <a href="{{ url_for('auth.register') }}" class="button-primary">Criar Conta Grátis</a>
+            <a href="{{ url_for('auth.login') }}" class="button-secondary">Já tenho uma conta</a>
+        </div>
+    {% else %}
+        <div class="hero-cta">
+             <a href="{{ url_for('main.dashboard') }}" class="button-primary">Acessar meu Painel</a>
+        </div>
     {% endif %}
+</div>
 {% endblock %}

@@ -1,0 +1,324 @@
+:root {
+  --background-main: #232323;
+  --background-card: #2e2e2e;
+  --primary-green: #32CD32;
+  --primary-green-hover: #27b227;
+  --input-bg: #232323;
+  --input-border: #444;
+  --input-focus: #32CD32;
+  --text-main: #f5f5f5;
+  --text-muted: #bdbdbd;
+  --danger: #ff4d4d;
+  --card-radius: 18px;
+  --shadow: 0 4px 24px 0 rgba(50,205,50,0.09);
+}
+
+/* Layout principal do dashboard */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2.5rem;
+  margin: 2.5rem auto;
+  max-width: 1200px;
+  padding: 0 1rem;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+/* Cards de seção */
+.card {
+  background: var(--background-card);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  margin-bottom: 2rem;
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 8px 32px 0 rgba(50,205,50,0.15);
+}
+
+/* Títulos */
+.card h2 {
+  margin-top: 0;
+  color: var(--primary-green);
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin-bottom: 1.2rem;
+}
+
+h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-align: center;
+  color: var(--text-main);
+  margin-top: 2rem;
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 8px rgba(50,205,50,0.14);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 2rem 0;
+}
+
+/* ===========================
+   Formulários
+   =========================== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+form p {
+  margin: 0 0 0.4rem 0;
+}
+
+label {
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  margin-top: 0.6rem;
+  letter-spacing: 0.01em;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="number"],
+select {
+  width: 100%;
+  background: var(--input-bg);
+  color: var(--text-main);
+  border: 1.5px solid var(--input-border);
+  border-radius: 12px;
+  padding: 0.7em 1em;
+  font-size: 1rem;
+  margin-bottom: 0.1rem;
+  transition: border 0.18s, background 0.18s;
+  outline: none;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+select:focus {
+  border-color: var(--input-focus);
+  background: #232b23;
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+/* Botões */
+button, input[type="submit"] {
+  background: var(--primary-green);
+  color: #111827;
+  border: none;
+  border-radius: 12px;
+  padding: 0.7em 1.3em;
+  font-size: 1.05rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(50,205,50,0.09);
+}
+
+button:hover, input[type="submit"]:hover {
+  background: var(--primary-green-hover);
+  box-shadow: 0 4px 18px 0 rgba(50,205,50,0.13);
+}
+
+button:focus,
+input[type="submit"]:focus {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+.secondary.outline,
+.secondary.outline:visited {
+  background: transparent;
+  color: var(--primary-green);
+  border: 1.5px solid var(--primary-green);
+  font-weight: 600;
+  box-shadow: none;
+  padding: 0.65em 1.2em;
+  border-radius: 10px;
+  transition: background 0.18s, color 0.18s;
+  cursor: pointer;
+}
+
+.secondary.outline:hover {
+  background: var(--primary-green);
+  color: #232323;
+}
+
+.secondary.outline:focus {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+/* Mensagens de erro */
+span[style*="color: red"] {
+  color: var(--danger) !important;
+  font-size: 0.97rem;
+  margin-top: 0.1em;
+  display: block;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* ===========================
+   Tabela de Locais
+   =========================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--background-card);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 12px 0 rgba(50,205,50,0.06);
+}
+
+th, td {
+  padding: 0.9em 1em;
+  text-align: left;
+}
+
+th {
+  background: #232323;
+  color: var(--primary-green);
+  font-size: 1.02rem;
+  font-weight: 700;
+  border-bottom: 2px solid #333;
+}
+
+td {
+  color: var(--text-main);
+  border-bottom: 1px solid #333;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover {
+  background: #232b23;
+  transition: background-color 0.25s ease;
+  cursor: pointer;
+}
+
+/* ===========================
+   Cards de Alimentos (Inventário)
+   =========================== */
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.food-card {
+  background: #242b24;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px 0 rgba(50,205,50,0.12);
+  padding: 1.3rem 1.1rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+
+.food-card:hover {
+  box-shadow: 0 8px 32px 0 rgba(50,205,50,0.17);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.food-card .item-title {
+  color: var(--primary-green);
+  font-size: 1.18rem;
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+}
+
+.food-card .item-quantity {
+  color: #fff;
+  background: #232323;
+  border-radius: 8px;
+  padding: 0.25em 1em;
+  font-size: 1.02rem;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+
+.food-card .item-expiry {
+  color: #bdbdbd;
+  font-size: 0.99rem;
+  margin-top: 0.2rem;
+}
+
+.food-card .item-expiry strong {
+  color: var(--primary-green);
+  font-weight: 700;
+}
+
+.food-card .text-muted {
+  color: #bdbdbd;
+  font-size: 0.93rem;
+  margin-top: 0.6rem;
+}
+
+.food-card footer {
+  width: 100%;
+  margin-top: 1.1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.actions-container {
+  display: flex;
+  gap: 0.8rem;              /* Espaço entre os botões */
+  justify-content: flex-end; /* Alinha os botões à direita */
+  align-items: center;      /* Alinha verticalmente ao centro */
+}
+
+.actions-container form {
+  margin: 0;                /* Remove margens extras do form */
+}
+
+.actions-container a.secondary.outline,
+.actions-container button.secondary.outline {
+  white-space: nowrap;      /* Evita quebra de texto nos botões */
+  padding: 0.5em 1em;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+
+/* Responsividade para mobile */
+@media (max-width: 700px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    padding: 0 0.2rem;
+  }
+  .card {
+    padding: 1.1rem 0.7rem 1rem 0.7rem;
+  }
+  .food-grid {
+    gap: 0.7rem;
+  }
+}

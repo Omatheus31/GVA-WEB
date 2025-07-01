@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 
+{% block page_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+{% endblock %}
+
 {% block title %}Registro - GVA-WEB{% endblock %}
 
 {% block content %}
+<div id="register-container">
     <h1>Registre-se</h1>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }} <p>
@@ -41,4 +46,5 @@
         <p>{{ form.submit() }}</p>
     </form>
     <p>Já tem uma conta? <a href="{{ url_for('auth.login') }}">Faça o login!</a></p>
+</div>
 {% endblock %}
