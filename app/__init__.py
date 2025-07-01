@@ -30,6 +30,10 @@ def create_app(config_class=Config):
     from .admin import bp as admin_bp
     app.register_blueprint(admin_bp, url_prefix='/admin')
 
+    # Registra comandos de linha de comando
+    from . import cli
+    cli.register_commands(app)
+
     @app.after_request
     def add_security_headers(response):
         # Adiciona cabeçalhos de segurança em todas as respostas HTTP

@@ -1,0 +1,14 @@
+<p>Olá, {{ user.username }},</p>
+<p>Este é um alerta do GVA-WEB. Os seguintes itens no seu inventário estão próximos da data de validade:</p>
+<ul>
+    {% for item in items %}
+        <li>
+            <strong>{{ item.name }}</strong> ({{ item.quantity }}) - Vence em: <strong>{{ item.expiry_date.strftime('%d/%m/%Y') }}</strong>
+        </li>
+    {% endfor %}
+</ul>
+<p>Não se esqueça de consumi-los ou planejar suas próximas compras!</p>
+<p>Acesse seu painel para mais detalhes.</p>
+<br>
+<p>Atenciosamente,</p>
+<p>Equipe GVA-WEB</p>

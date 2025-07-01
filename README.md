@@ -57,6 +57,12 @@ O projeto conta com um robusto arsenal de funcionalidades, com ênfase em segura
     * **Onde encontrar no código:**
         * **Implementação Central:** A lógica está centralizada na função `add_security_headers()`, que usa o decorador `@app.after_request`, dentro do arquivo `app/__init__.py`.
 
+* **Notificações Proativas de Validade**
+    * **Descrição:** Um script customizado (flask send-expiry-alerts) que pode ser executado periodicamente para verificar todos os alimentos no banco de dados, agrupando os que estão próximos do vencimento por usuário e enviando um único e-mail de alerta para cada um.
+    * **Onde encontrar no código:**
+        * **Comando e Lógica Principal:** A lógica de busca e o comando Flask estão na função `send_expiry_alerts` no arquivo `app/cli.py`.
+        * **Envio de E-mail:** A função `send_expiry_alert_email()` em `app/auth/email.py` é responsável por montar e enviar o e-mail.
+        * **Envio de E-mail:** O corpo do e-mail de alerta está em `app/templates/auth/email/expiry_alert.html.`
 
 ## Tecnologias Utilizadas
 
