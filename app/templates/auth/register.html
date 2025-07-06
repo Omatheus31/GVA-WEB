@@ -10,13 +10,14 @@
 <div id="register-container">
     <h1>Registre-se</h1>
     <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }} <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
+        {{ form.hidden_tag() }} 
+        <div class="form-group">
+            {{ form.username.label }}
+            {{ form.username() }}
             {% for error in form.username.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span class="error-message">{{ error }}</span>
             {% endfor %}
-        </p>
+        </div>
         <p>
             {{ form.email.label }}<br>
             {{ form.email(size=32) }}<br>
@@ -39,7 +40,8 @@
             {% endfor %}
         </p>
 
-        <div id="password-strength-rules-title">
+        <div id="password-strength-rules">
+            <span id="password-strength-rules-title">A senha deve conter:</span>
             <p id="length" class="invalid">Pelo menos 8 caracteres</p>
             <p id="lowercase" class="invalid">Pelo menos uma letra minúscula</p>
             <p id="uppercase" class="invalid">Pelo menos uma letra MAIÚSCULA</p>
@@ -54,9 +56,19 @@
             {% endfor %}
         </p>
         <p>
-            {# LINHA CORRETA #}
             {{ recaptcha }}
         </p>
+        <div class="form-group-terms" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+            {{ form.accept_terms() }}
+            <label for="accept_terms" style="margin: 0;">
+                Eu li e aceito os 
+                <a href="{{ url_for('main.terms') }}" target="_blank">Termos de Uso</a> e a 
+                <a href="{{ url_for('main.security_policy') }}" target="_blank">Política de Segurança</a>.
+            </label>
+        </div>
+        {% for error in form.accept_terms.errors %}
+            <p><span class="error-message">{{ error }}</span></p>
+        {% endfor %}
 
         <p>{{ form.submit() }}</p>
     </form>

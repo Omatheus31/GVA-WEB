@@ -27,6 +27,10 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Senha', validators=[DataRequired(), Length(min=8), password_complexity])
     password2 = PasswordField(
         'Repita a Senha', validators=[DataRequired(), EqualTo('password', message='As senhas devem ser iguais.')])
+    accept_terms = BooleanField(
+        'Eu li e aceito os Termos de Uso e a Política de Segurança.',
+        validators=[DataRequired(message='Você deve aceitar os termos para se registrar.')]
+    )
     submit = SubmitField('Registrar')
 
     # Validador para verificar se o usuário já existe
