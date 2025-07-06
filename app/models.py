@@ -5,7 +5,6 @@ from flask import current_app
 import jwt
 import time
 
-
 @login_manager.user_loader
 def load_user(user_id):
     user = User.query.get(int(user_id))
@@ -16,21 +15,19 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(256))
-    
     tfa_secret = db.Column(db.String(32), nullable=True)
     tfa_enabled = db.Column(db.Boolean, nullable=False, server_default='false')
-
     is_admin = db.Column(db.Boolean, nullable=False, server_default='false')
 
-    locations = db.relationship('Location', backref='owner', lazy='dynamic')
-    food_items = db.relationship('FoodItem', backref='owner', lazy='dynamic')
+    locations = db.relationship('Location', backref='owner', lazy='dynamic', cascade="all, delete-orphan")
+    food_items = db.relationship('FoodItem', backref='owner', lazy='dynamic', cascade="all, delete-orphan")
+    audit_logs = db.relationship('AuditLog', backref='user_log', lazy='dynamic', cascade="all, delete-orphan")
 
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
         
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_hash, password)
-        
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -72,12 +69,11 @@ class Location(db.Model):
 class FoodItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    quantity = db.Column(db.String(50), nullable=True) # Ex: "1 unidade", "500g"
+    quantity = db.Column(db.String(50), nullable=True)
     expiry_date = db.Column(db.Date, nullable=False)
     photo_filename = db.Column(db.String(100), nullable=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     
-    # Chaves estrangeiras que ligam o item ao usuário e ao local
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=True)
 
@@ -92,8 +88,7 @@ class AuditLog(db.Model):
     action = db.Column(db.String(256), nullable=False)
     details = db.Column(db.String(512), nullable=True)
 
-    user = db.relationship('User')
+    user = db.relationship('User', backref='user_log_entries')
 
     def __repr__(self):
         return f'<AuditLog {self.timestamp} - {self.action}>'
-    
