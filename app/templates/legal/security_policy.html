@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Política de Segurança - GVA-WEB{% endblock %}
+
+{% block content %}
+<div class="legal-container">
+    <h1>Política de Segurança</h1>
+    <p><em>Última atualização: 06 de julho de 2025</em></p>
+
+    <article>
+        <p>A segurança de seus dados é nossa principal prioridade. O GVA-WEB foi construído com múltiplas camadas de segurança para proteger suas informações. Abaixo detalhamos as medidas implementadas.</p>
+
+        <h2>Autenticação e Controle de Acesso</h2>
+        <ul>
+            <li><strong>Hashing de Senhas:</strong> Suas senhas nunca são armazenadas em texto plano. Utilizamos o algoritmo Bcrypt para criar um hash criptográfico seguro, tornando praticamente impossível a recuperação da senha original mesmo em caso de violação do banco de dados.</li>
+            <li><strong>Autenticação de Dois Fatores (2FA):</strong> Oferecemos uma camada opcional de segurança onde, além da senha, é necessário um código de 6 dígitos gerado em seu aplicativo autenticador para fazer o login.</li>
+            <li><strong>Autorização:</strong> O sistema garante que cada usuário só possa acessar e gerenciar seus próprios dados. As consultas ao banco de dados são estritamente filtradas pelo ID do usuário logado.</li>
+            <li><strong>Recuperação de Senha Segura:</strong> O processo de "Esqueci minha senha" utiliza tokens JWT assinados digitalmente, com tempo de validade limitado, garantindo que apenas o dono do e-mail possa redefinir a senha.</li>
+        </ul>
+
+        <h2>Proteção da Aplicação</h2>
+        <ul>
+            <li><strong>Proteção contra Bots (CAPTCHA):</strong> O formulário de registro é protegido pelo Google reCAPTCHA v2 para prevenir a criação de contas por robôs.</li>
+            <li><strong>Política de Conteúdo Seguro (CSP):</strong> A aplicação utiliza cabeçalhos CSP para instruir o navegador a bloquear a execução de scripts e conteúdos de fontes não confiáveis, mitigando o risco de ataques de Cross-Site Scripting (XSS).</li>
+            <li><strong>Proteção contra CSRF:</strong> Todos os formulários que realizam ações (adicionar, editar, excluir) são protegidos com tokens anti-CSRF para garantir que as requisições sejam originadas do nosso próprio site.</li>
+        </ul>
+
+        <h2>Auditoria</h2>
+        <p>Registramos eventos críticos de segurança, como tentativas de login bem-sucedidas e falhas, para permitir a análise e detecção de atividades suspeitas.</p>
+    </article>
+</div>
+{% endblock %}

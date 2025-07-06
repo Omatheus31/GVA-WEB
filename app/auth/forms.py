@@ -2,7 +2,18 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 from app.models import User
+import re
 
+def password_complexity(form, field):
+    password = field.data
+    if not re.search(r'[A-Z]', password):
+        raise ValidationError('A senha deve conter pelo menos uma letra maiúscula.')
+    if not re.search(r'[a-z]', password):
+        raise ValidationError('A senha deve conter pelo menos uma letra minúscula.')
+    if not re.search(r'[0-9]', password):
+        raise ValidationError('A senha deve conter pelo menos um número.')
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        raise ValidationError('A senha deve contem pelo menos um caractere especial (!@#$ etc).')
 class LoginForm(FlaskForm):
     username = StringField('Usuário', validators=[DataRequired(), Length(min=4, max=64)])
     password = PasswordField('Senha', validators=[DataRequired()])
@@ -13,7 +24,7 @@ class RegistrationForm(FlaskForm):
     username = StringField('Usuário', validators=[DataRequired(), Length(min=4, max=64)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     email2 = StringField('Repita o Email', validators=[DataRequired(), EqualTo('email', message='Os e-mails devem ser iguais.')])
-    password = PasswordField('Senha', validators=[DataRequired(), Length(min=8)])
+    password = PasswordField('Senha', validators=[DataRequired(), Length(min=8), password_complexity])
     password2 = PasswordField(
         'Repita a Senha', validators=[DataRequired(), EqualTo('password', message='As senhas devem ser iguais.')])
     submit = SubmitField('Registrar')
@@ -35,7 +46,7 @@ class PasswordResetRequestForm(FlaskForm):
     submit = SubmitField('Pedir Redefinição de Senha')
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('Nova Senha', validators=[DataRequired(), Length(min=8)])
+    password = PasswordField('Nova Senha', validators=[DataRequired(), Length(min=8), password_complexity])
     password2 = PasswordField(
         'Repita a Nova Senha', validators=[DataRequired(), EqualTo('password', message='As senha devem ser iguais.')]
     )

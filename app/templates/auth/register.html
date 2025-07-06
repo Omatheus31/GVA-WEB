@@ -33,11 +33,19 @@
         </p>
         <p>
             {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
+            {{ form.password(size=32, id="password-field") }} <br>
             {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span class="error-message">{{ error }}</span>
             {% endfor %}
         </p>
+
+        <div id="password-strength-rules-title">
+            <p id="length" class="invalid">Pelo menos 8 caracteres</p>
+            <p id="lowercase" class="invalid">Pelo menos uma letra minúscula</p>
+            <p id="uppercase" class="invalid">Pelo menos uma letra MAIÚSCULA</p>
+            <p id="number" class="invalid">Pelo menos um número</p>
+            <p id="special" class="invalid">Pelo menos um caractere especial (!@#...)</p>
+        </div>
         <p>
             {{ form.password2.label }}<br>
             {{ form.password2(size=32) }}<br>

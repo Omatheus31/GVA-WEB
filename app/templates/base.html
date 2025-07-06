@@ -51,7 +51,48 @@
     </main>
 
     <footer>
+        <div class="footer-links" style="text-align: center; margin-bottom: 1rem;">
+            <a href="{{ url_for('main.terms') }}">Termos de Uso</a> | 
+            <a href="{{ url_for('main.security_policy') }}">Política de Segurança</a>
+        </div>
         <p>&copy; 2025 GVA-WEB</p>
     </footer>
+
+    {% block scripts %}{% endblock %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const passwordField = document.getElementById('password-field');
+
+            if (passwordField) {
+                const rules = {
+                    length: document.getElementById('length'),
+                    lowercase: document.getElementById('lowercase'),
+                    uppercase: document.getElementById('uppercase'),
+                    number: document.getElementById('number'),
+                    special: document.getElementById('special')
+                };
+
+                passwordField.addEventListener('keyup', () => {
+                    const pass = passwordField.value;
+
+                    if (pass.length >= 8) rules.length.classList.add('valid');
+                    else rules.length.classList.remove('valid');
+
+                    if (/[a-z]/.test(pass)) rules.lowercase.classList.add('valid');
+                    else rules.lowercase.classList.remove('valid');
+
+                    if (/[A-Z]/.test(pass)) rules.uppercase.classList.add('valid');
+                    else rules.uppercase.classList.remove('valid');
+
+                    if (/[0-9]/.test(pass)) rules.number.classList.add('valid');
+                    else rules.number.classList.remove('valid');
+
+                    if (/[!@#$%^&*(),.?":{}|<>]/.test(pass)) rules.special.classList.add('valid');
+                    else rules.special.classList.remove('valid');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
