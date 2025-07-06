@@ -197,3 +197,37 @@ footer span {
         padding: 0.8rem 0 1rem 0;
     }
 }
+
+/* ================================
+   Mensagens Flash (Alertas)
+   ================================ */
+.alert {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-left: 5px solid #fff; 
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+    font-weight: 500;
+    position: relative;
+}
+
+.alert-success {
+    background-color: #2e4b34;
+    border-left-color: var(--primary-green); 
+    color: #d4edda;
+}
+.alert-danger {
+    background-color: #582126;
+    border-left-color: #ff4d4d;
+    color: #f8d7da;
+}
+.alert-info {
+    background-color: #1c424e;
+    border-left-color: #39a2db;
+    color: #d1ecf1;
+}
+.alert-warning {
+    background-color: #665b2b;
+    border-left-color: #ffc107;
+    color: #fff3cd;
+}
