@@ -1,0 +1,10 @@
+<p>Olá, {{ user.username }},</p>
+<p>Bem-vindo ao GVA-WEB! Por favor, clique no link abaixo para confirmar seu endereço de e-mail e ativar sua conta:</p>
+<p>
+    <a href="{{ url_for('auth.confirm_email', token=token, _external=True) }}">
+        Confirmar Minha Conta
+    </a>
+</p>
+<p>Se você não criou uma conta em nosso site, por favor ignore este e-mail.</p>
+<p>Atenciosamente,</p>
+<p>Equipe GVA-WEB</p>

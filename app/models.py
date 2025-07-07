@@ -18,10 +18,11 @@ class User(UserMixin, db.Model):
     tfa_secret = db.Column(db.String(32), nullable=True)
     tfa_enabled = db.Column(db.Boolean, nullable=False, server_default='false')
     is_admin = db.Column(db.Boolean, nullable=False, server_default='false')
+    is_confirmed = db.Column(db.Boolean, nullable=False, server_default='false')
 
     locations = db.relationship('Location', backref='owner', lazy='dynamic', cascade="all, delete-orphan")
     food_items = db.relationship('FoodItem', backref='owner', lazy='dynamic', cascade="all, delete-orphan")
-    audit_logs = db.relationship('AuditLog', backref='user_log', lazy='dynamic', cascade="all, delete-orphan")
+    audit_logs = db.relationship('AuditLog', back_populates='user', lazy='dynamic', cascade="all, delete-orphan")
 
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -57,6 +58,26 @@ class User(UserMixin, db.Model):
         
         return User.query.get(id)
     
+    def get_confirmation_token(self, expires_in=1800):
+        # Cria um token válido por 30 minutos
+        return jwt.encode(
+            {'confirm': self.id, 'exp': time.time() + expires_in},
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256'
+        )
+    
+    @staticmethod
+    def verify_confirmation_token(token):
+        try:
+            id = jwt.decode(
+                token,
+                current_app.config['SECRET_KEY'],
+                algorithms=['HS256']
+            )['confirm']
+        except:
+            return None
+        return User.query.get(id)
+    
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -88,7 +109,7 @@ class AuditLog(db.Model):
     action = db.Column(db.String(256), nullable=False)
     details = db.Column(db.String(512), nullable=True)
 
-    user = db.relationship('User', backref='user_log_entries')
+    user = db.relationship('User', back_populates='audit_logs')
 
     def __repr__(self):
         return f'<AuditLog {self.timestamp} - {self.action}>'

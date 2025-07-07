@@ -1,10 +1,10 @@
 from flask import render_template, redirect, url_for, flash, request, session
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 from ..extensions import db, bcrypt, recaptcha
 from app.models import User, AuditLog
 from app.auth.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, ResetPasswordForm, TwoFactorVerifyForm 
 from app.auth import bp
-from .email import send_password_reset_email
+from .email import send_password_reset_email, send_confirmation_email
 import pyotp
 
 def log_audit(action, user_id=None, details=None):
@@ -34,8 +34,13 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        # Mosta uma mensagem de sucesso e redireciona para o login
-        flash('Sua conta foi criada com sucesso! Agora você pode fazer o login.', 'success')
+        # Envia o e-mail de confirmação
+        send_confirmation_email(user) 
+
+        # Mosta uma mensagem de instrução para o usuário
+        flash('Um e-mail de confirmação foi enviado para sua caixa de entrada. Por favor, ative sua conta.', 'success')
+        
+        # Redireciona para a página de login
         return redirect(url_for('auth.login'))
     
     
@@ -63,9 +68,13 @@ def login():
 
         if user and user.check_password(form.password.data):
             
+            # verifica se a conta foi confirmada antes de permitir o login
+            if not user.is_confirmed:
+                flash('Sua conta ainda não foi confirmada. Por favor, verifique seu e-mail.', 'warning')
+                return redirect(url_for('auth.login'))
+            
             if user.tfa_enabled:
                 session['2fa_user_id'] = user.id
-                session['2fa_remember_me'] = form.remember_me.data
                 return redirect(url_for('auth.tfa_verify'))
 
             login_user(user)
@@ -135,14 +144,12 @@ def tfa_verify():
     if form.validate_on_submit():
         totp = pyotp.TOTP(user.tfa_secret)
         if totp.verify(form.code.data):
-            remember = session.get('2fa_remember_me', False)
-            login_user(user, remember=remember)
+            login_user(user)
 
             log_audit('2FA_SUCCESS', user_id=user.id, details=f"User '{user.username}' completed 2FA.")
             db.session.commit()
 
             session.pop('2fa_user_id')
-            session.pop('2fa_remember_me')
 
             next_page = request.args.get('next')
             flash('Login realizado com sucesso!', 'success')
@@ -151,3 +158,21 @@ def tfa_verify():
             flash('Código 2FA inválido.', 'danger')
     
     return render_template('auth/2fa_verify.html', form=form)
+
+@bp.route('/confirm/<token>')
+def confirm_email(token):
+
+    user = User.verify_confirmation_token(token)
+
+    if user is None:
+        flash('O link de confirmação é inválido ou expirou.', 'danger')
+        return redirect(url_for('auth.login'))
+    
+    if user.is_confirmed:
+        flash('Sua conta já foi confirmada. POr favor, faça o login.', 'info')
+    else:
+        user.is_confirmed = True
+        db.session.commit()
+        flash('Sua conta foi confirmada com sucesso.', 'success')
+    
+    return redirect(url_for('auth.login'))

@@ -21,3 +21,13 @@ def send_expiry_alert_email(user, items):
     msg.html = render_template('auth/email/expiry_alert.html',
                                user=user, items=items)
     mail.send(msg)
+
+def send_confirmation_email(user):
+    """Envia o e-mail de confirmação de conta."""
+    token = user.get_confirmation_token()
+    msg = Message('Confirme sua Conta - GVA-WEB',
+                  sender=current_app.config['MAIL_USERNAME'],
+                  recipients=[user.email])
+    msg.html = render_template('auth/email/confirm_email.html',
+                               user=user, token=token)
+    mail.send(msg)
