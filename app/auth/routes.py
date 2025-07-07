@@ -68,7 +68,7 @@ def login():
                 session['2fa_remember_me'] = form.remember_me.data
                 return redirect(url_for('auth.tfa_verify'))
 
-            login_user(user, remember=form.remember_me.data)
+            login_user(user)
             log_audit('LOGIN_SUCCESS', user_id=user.id, details=f"User '{user.username}' logged in successfully.")
             db.session.commit()
             next_page = request.args.get('next')

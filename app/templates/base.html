@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}GVA-WEB{% endblock %}</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
     {% block page_css %}{% endblock %}
 </head>
 <body>
@@ -17,15 +17,22 @@
 
             <div class="nav-group">
                 {% if current_user.is_authenticated %}
-                    <span>Olá, {{ current_user.username }}!</span>
-                    <a href="{{ url_for('main.dashboard') }}" class="{% if request.endpoint == 'main.dashboard' %}active{% endif %}">Meu Painel</a>
-                    <a href="{{ url_for('main.tfa_setup') }}" class="{% if request.endpoint == 'main.tfa_setup' %}active{% endif %}">Configurar 2FA</a>
-
-                    {% if current_user.is_admin %}
-                        <a href="{{ url_for('admin.dashboard') }}" class="admin-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">Painel Admin</a>
-                    {% endif %}
-                    
-                    <a href="{{ url_for('auth.logout') }}">Logout</a>
+                    <div class="dropdown">
+                        <button id="user-menu-button" class="nav-user-button" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" type="button">
+                            <span>Olá, {{ current_user.username }}!</span>
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4"/></svg>
+                        </button>
+                        <div id="user-menu" class="dropdown-content" tabindex="-1" role="menu" aria-labelledby="user-menu-button">
+                            <a href="{{ url_for('main.dashboard') }}" role="menuitem" tabindex="0">Meu Painel</a>
+                            <a href="{{ url_for('main.change_password') }}" role="menuitem" tabindex="0">Alterar Senha</a>
+                            <a href="{{ url_for('main.tfa_setup') }}" role="menuitem" tabindex="0">Configurar 2FA</a>
+                            {% if current_user.is_admin %}
+                                <a href="{{ url_for('admin.dashboard') }}" class="admin-link" role="menuitem" tabindex="0">Painel Admin</a>
+                            {% endif %}
+                            <hr class="dropdown-divider" />
+                            <a href="{{ url_for('auth.logout') }}" role="menuitem" tabindex="0">Logout</a>
+                        </div>
+                    </div>
                 {% else %}
                     <a href="{{ url_for('auth.login') }}" class="{% if request.endpoint == 'auth.login' %}active{% endif %}">Login</a>
                     <a href="{{ url_for('auth.register') }}" class="{% if request.endpoint == 'auth.register' %}active{% endif %}">Registrar</a>
@@ -33,7 +40,7 @@
             </div>
         </nav>
     </header>
-    <hr>
+    <hr />
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flashes">
@@ -92,6 +99,46 @@
                     else rules.special.classList.remove('valid');
                 });
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userMenu = document.getElementById('user-menu');
+
+            if (!userMenuButton || !userMenu) return;
+
+            // Toggle menu com controle explícito
+            userMenuButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const isShown = userMenu.classList.contains('show');
+                userMenu.classList.toggle('show', !isShown);
+
+                if (!isShown) {
+                    userMenuButton.setAttribute('aria-expanded', 'true');
+                    userMenu.focus();
+                } else {
+                    userMenuButton.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Fechar menu ao clicar fora
+            document.addEventListener('click', (event) => {
+                if (!userMenu.contains(event.target) && event.target !== userMenuButton) {
+                    if (userMenu.classList.contains('show')) {
+                        userMenu.classList.remove('show');
+                        userMenuButton.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+
+            // Fechar menu com ESC e navegação com teclado
+            userMenu.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    userMenu.classList.remove('show');
+                    userMenuButton.setAttribute('aria-expanded', 'false');
+                    userMenuButton.focus();
+                }
+            });
         });
     </script>
 </body>

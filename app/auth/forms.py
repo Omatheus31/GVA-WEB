@@ -20,7 +20,6 @@ def password_complexity(form, field):
 class LoginForm(FlaskForm):
     username = StringField('Usuário', validators=[DataRequired(message="Por favor, insira seu nome de usuário.")])
     password = PasswordField('Senha', validators=[DataRequired(message="Por favor, insira sua senha.")])
-    remember_me = BooleanField('Lembrar-me')
     submit = SubmitField('Entrar')
 
 class RegistrationForm(FlaskForm):
@@ -93,3 +92,16 @@ class TwoFactorVerifyForm(FlaskForm):
         Length(min=6, max=6, message="O código deve ter exatamente 6 dígitos.")
     ])
     submit = SubmitField('Verificar Código')
+
+class ChangePasswordForm(FlaskForm):
+    current_password = PasswordField('Senha Atual', validators=[DataRequired(message='Você precisa informar sua senha atual')])
+    new_password = PasswordField('Nova senha', validators=[
+        DataRequired(message="A nova senha é obrigatória."),
+        Length(min=8, message="A nova senha deve ter no mínimo 8 caracteres."),
+        password_complexity
+    ])
+    new_password2 = PasswordField('Repita a Nova Senha', validators=[
+        DataRequired(message="A confirmação de senha é obrigatória."),
+        EqualTo('new_password', message='As senhas devem ser iguais.')
+    ])
+    submit = SubmitField('Alterar Senha')

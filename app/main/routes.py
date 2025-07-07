@@ -1,6 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request, session
-from flask_login import login_required, current_user
+from flask_login import login_required, current_user, fresh_login_required, logout_user
 from app import db
+from app.auth.routes import log_audit
 from app.main import bp
 from app.main.forms import LocationForm, FoodItemForm
 from app.models import Location, FoodItem
@@ -8,8 +9,7 @@ import pyotp
 import qrcode
 import io
 import base64
-from flask_login import fresh_login_required
-from ..auth.forms import TwoFactorForm
+from ..auth.forms import TwoFactorForm, ChangePasswordForm
 
 @bp.route('/')
 @bp.route('/index')
@@ -205,3 +205,27 @@ def terms():
 @bp.route('/security-policy')
 def security_policy():
     return render_template('legal/security_policy.html', title='Política de Segurança')
+
+@bp.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        # Verifica se a senha atual fornecida está correta
+        if current_user.check_password(form.current_password.data):
+            # Se sim, atualiza para a nova senha
+            current_user.set_password(form.new_password.data)
+
+            # Adiciona um log de auditoria para a mudança de senha
+            log_audit('PASSWORD_CHANGED', user_id=current_user.id, details="User changed their password successfully.")
+
+            db.session.commit()
+
+            # Faz o logout do usuário por segurança
+            logout_user()
+            flash('Sua senha foi alterada com sucesso! Por favor, faça o login novamente com sua nova senha.', 'success')
+            return redirect(url_for('auth.login'))
+        else:
+            flash('Sua senha atual está incorreta.', 'danger')
+
+    return render_template('change_password.html', title='Alterar Senha', form=form)
