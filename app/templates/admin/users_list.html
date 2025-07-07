@@ -24,6 +24,7 @@
                     <th>Email</th>
                     <th>Admin?</th>
                     <th>2FA Ativo?</th>
+                    <th>Ações</th> </tr>
                 </tr>
             </thead>
             <tbody>
@@ -35,15 +36,19 @@
                     <td>{{ 'Sim' if user.is_admin else 'Não' }}</td>
                     <td>{{ 'Sim' if user.tfa_enabled else 'Não' }}</td>
                     <td>
-                        {% if user.id != current_user.id %}
-                            <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="post">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit" class="secondary outline"
-                                        onclick="return confirm('Tem certeza que deseja excluir o usuário \'{{ user.username }}\'? Esta ação é irreversível.');">
-                                    Excluir
-                                </button>
-                            </form>
-                        {% endif %}
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="button-link">Editar</a>
+
+                            {% if user.id != current_user.id %}
+                                <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="post" style="margin: 0;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="secondary outline"
+                                            onclick="return confirm('Tem certeza que deseja excluir o usuário \'{{ user.username }}\'? Esta ação é irreversível.');">
+                                        Excluir
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
                     </td>
                 </tr>
                 {% else %}

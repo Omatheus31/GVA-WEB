@@ -1,9 +1,10 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 from app.admin import bp
 from app.decorators import admin_required
 from app.models import AuditLog, User
 from app.extensions import db
+from .forms import EditUserForm
 
 @bp.route('/dashboard')
 @login_required
@@ -43,3 +44,26 @@ def delete_user(user_id):
 
     flash(f"O usuário '{user_to_delete.username}' foi excluído com sucesso.", 'success')
     return redirect(url_for('admin.users_list'))
+
+
+@bp.route('/user/<int:user_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_user(user_id):
+    user_to_edit = User.query.get_or_404(user_id)
+
+    form = EditUserForm(original_username=user_to_edit.username, original_email=user_to_edit.email)
+
+    if form.validate_on_submit():
+        user_to_edit.username = form.username.data
+        user_to_edit.email = form.email.data
+        user_to_edit.is_admin = form.is_admin.data
+        db.session.commit()
+        flash('Usuário atualizado com sucesso!', 'success')
+        return redirect(url_for('admin.users_list'))
+    elif request.method == 'GET':
+        form.username.data = user_to_edit.username
+        form.email.data = user_to_edit.email
+        form.is_admin.data = user_to_edit.is_admin
+
+    return render_template('admin/edit_user.html', title='Editar Usuário', form=form)

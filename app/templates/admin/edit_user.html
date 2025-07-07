@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Usuário{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_edit_user.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="edit-user-container">
+    <h1>Editar Usuário: {{ form.username.data }}</h1>
+    <hr>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+
+        <label for="{{ form.username.id }}">{{ form.username.label.text }}</label>
+        {{ form.username(size=32, id=form.username.id) }}
+        {% for error in form.username.errors %}
+            <span class="error-message">{{ error }}</span>
+        {% endfor %}
+
+        <label for="{{ form.email.id }}">{{ form.email.label.text }}</label>
+        {{ form.email(size=32, id=form.email.id) }}
+        {% for error in form.email.errors %}
+            <span class="error-message">{{ error }}</span>
+        {% endfor %}
+
+        <hr>
+
+        <div class="checkbox-group">
+            {{ form.is_admin(id="is_admin") }}
+            <label for="is_admin">{{ form.is_admin.label.text }}</label>
+        </div>
+
+        <hr>
+
+        {{ form.submit(class_="") }}
+    </form>
+    <a href="{{ url_for('admin.users_list') }}" class="back-link">Cancelar e voltar</a>
+</div>
+{% endblock %}
