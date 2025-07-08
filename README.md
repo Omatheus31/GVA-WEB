@@ -1,137 +1,134 @@
 # GVA-WEB (Gerenciador de Validade de Alimentos)
 
-> Um projeto acadêmico de aplicação web segura, desenvolvido para a disciplina de Segurança da Informação.
+> Um projeto acadêmico de aplicação web segura, desenvolvido para a disciplina de Segurança da Informação, com o objetivo de criar uma ferramenta funcional e demonstrar a implementação de um ciclo de desenvolvimento seguro.
 
-## Descrição do Projeto
+## 📝 Descrição do Projeto
 
-O GVA-WEB é um sistema web projetado para auxiliar usuários domésticos no gerenciamento de datas de validade de seus produtos alimentícios. A aplicação permite o cadastro de itens, organização por locais de armazenamento e envia notificações proativas sobre produtos próximos ao vencimento, visando reduzir o desperdício de alimentos.
+O GVA-WEB é um sistema web projetado para auxiliar usuários domésticos no gerenciamento de datas de validade de seus produtos alimentícios. A aplicação permite o cadastro de itens, organização por locais de armazenamento e executa um script para notificar proativamente os usuários sobre produtos próximos ao vencimento, visando reduzir o desperdício de alimentos.
 
-O foco principal do projeto foi a aplicação e demonstração de um ciclo de desenvolvimento seguro, implementando múltiplas camadas de segurança para proteger os dados dos usuários e a integridade da aplicação, conforme solicitado pelos requisitos da disciplina.
+O foco principal do projeto foi a aplicação e demonstração de múltiplas camadas de segurança para proteger os dados dos usuários e a integridade da aplicação, conforme solicitado pelos requisitos da disciplina.
 
-##  Funcionalidades e Competências de Segurança
+## ✨ Funcionalidades e Competências de Segurança
 
-O projeto conta com um robusto arsenal de funcionalidades, com ênfase em segurança, implementadas em locais específicos do código:
+O projeto conta com um robusto arsenal de funcionalidades, com ênfase em segurança:
 
-* **Autenticação Segura com Hashing de Senhas**
-    * **Descrição:** Sistema completo de registro e login. As senhas dos usuários nunca são armazenadas em texto plano, utilizando o algoritmo Bcrypt para gerar um hash seguro.
-    * **Onde encontrar no código:**
-        * **Modelagem:** A lógica de senha está encapsulada nos métodos `set_password()` e `check_password()` da classe `User` em `app/models.py`.
-        * **Rotas:** A criação do hash (no registro) e a verificação (no login) são chamadas nas rotas `register()` e `login()` em `app/auth/routes.py`.
-        * **Extensão:** O objeto `bcrypt` é inicializado em `app/extensions.py`.
+  * **Registro Seguro e Confirmação de E-mail:** Sistema de registro protegido por **CAPTCHA** e complexidade de senha, que exige a ativação da conta via link de confirmação enviado por e-mail.
+  * **Autenticação Segura e 2FA:** Login com senhas "hasheadas" (Bcrypt) e uma camada opcional de **Autenticação de Dois Fatores (2FA)** usando o padrão TOTP.
+  * **Gerenciamento de Conta pelo Usuário:** O usuário logado pode **alterar sua própria senha** (requer a senha atual) e **excluir sua própria conta** de forma permanente (requer confirmação com senha).
+  * **Recuperação de Senha Segura:** Fluxo completo com tokens JWT de uso único e tempo de expiração, enviados por e-mail.
+  * **Autorização Baseada em Papel (Admin/Usuário):** Controle de acesso que garante que cada usuário só acesse seus próprios dados. O papel de `admin` tem acesso a um painel restrito.
+  * **Gerenciamento de Usuários (Admin):** O administrador pode visualizar, editar (promover a admin) e excluir contas de usuário através do painel de administração.
+  * **Sistema de Auditoria:** Registro de eventos críticos (logins, falhas, alterações de senha, etc.) em uma tabela dedicada, com uma interface de visualização para administradores.
+  * **Política de Conteúdo Seguro (CSP) e Cabeçalhos HTTP:** Implementação de cabeçalhos de segurança para mitigar ataques de Cross-Site Scripting (XSS) e Clickjacking.
+  * **Notificações Proativas de Validade:** Um script customizado (`flask send-expiry-alerts`) verifica e envia e-mails de alerta sobre alimentos próximos do vencimento.
 
-* **Autorização Baseada em Papéis (Implícita)**
-    * **Descrição:** Controle de acesso que garante que cada usuário só possa visualizar e gerenciar seus próprios dados (locais e alimentos).
-    * **Onde encontrar no código:**
-        * **Lógica Principal:** A filtragem dos dados é feita na rota `dashboard()` em `app/main/routes.py`, utilizando consultas como `Location.query.filter_by(user_id=current_user.id)`.
-        * **Proteção de Rotas:** O decorador `@login_required` é usado em rotas como `/dashboard` para garantir que apenas usuários autenticados possam acessá-las.
+## 🛠️ Tecnologias Utilizadas
 
-* **Recuperação de Senha Segura**
-    * **Descrição:** Fluxo completo com tokens de segurança (JWT) de uso único e tempo de expiração, enviados por e-mail para o usuário.
-    * **Onde encontrar no código:**
-        * **Geração de Token:** Os métodos `get_reset_password_token()` e `verify_reset_password_token()` estão na classe `User` em `app/models.py`.
-        * **Envio de E-mail:** A função `send_password_reset_email()` está em `app/auth/email.py`.
-        * **Rotas:** As páginas para solicitar e para efetuar a redefinição estão nas funções `reset_password_request()` e `reset_password()` em `app/auth/routes.py`.
+  * **Backend:** Python, Flask
+  * **Banco de Dados:** PostgreSQL
+  * **ORM e Migrações:** Flask-SQLAlchemy, Flask-Migrate
+  * **Segurança e Autenticação:** Flask-Login, Flask-Bcrypt, PyJWT, Flask-ReCaptcha, pyotp, Flask-Mail
+  * **Frontend:** HTML5, CSS3 (com Templates Jinja2)
+  * **Geração de QR Code:** qrcode[pil]
+  * **Fusos Horários:** pytz
 
-* **Proteção contra Bots (CAPTCHA)**
-    * **Descrição:** Uso do Google reCAPTCHA v2 para proteger o formulário de registro contra submissões automatizadas por robôs.
-    * **Onde encontrar no código:**
-        * **Configuração:** As chaves são definidas em `.env` e carregadas em `config.py`. A extensão é inicializada em `app/extensions.py` e `app/__init__.py`.
-        * **Validação:** A verificação `recaptcha.verify()` é executada na rota `register()` em `app/auth/routes.py`.
-        * **Renderização:** O widget é exibido no template `app/templates/auth/register.html` através da tag `{{ recaptcha }}`.
-
-* **Autenticação de Dois Fatores (2FA)**
-    * **Descrição:** Camada extra de segurança no login utilizando o padrão TOTP, compatível com apps como Google Authenticator.
-    * **Onde encontrar no código:**
-        * **Modelagem:** Os campos `tfa_secret` e `tfa_enabled` foram adicionados à classe `User` em `app/models.py`.
-        * **Rota de Ativação:** A lógica para gerar o QR Code e ativar o 2FA está na rota `tfa_setup()` em `app/main/routes.py`.
-        * **Rota de Verificação:** A rota de login foi modificada para redirecionar para `/2fa_verify`, cuja lógica está na função `tfa_verify()` em `app/auth/routes.py`.
-
-* **Sistema de Auditoria**
-    * **Descrição:** Registro de ações importantes (logins bem-sucedidos, falhas de login) em uma tabela dedicada no banco de dados para futura análise e rastreabilidade.
-    * **Onde encontrar no código:**
-        * **Modelo:** A classe `AuditLog` que define a estrutura da tabela de logs está em `app/models.py`.
-        * **Lógica:** Uma função auxiliar `log_audit()` foi criada e é chamada na rota `login()` em `app/auth/routes.py` para registrar os eventos.
-
-* **Política de Conteúdo Seguro (CSP) e Cabeçalhos de Segurança**
-    * **Descrição:** Implementação de cabeçalhos de resposta HTTP para instruir o navegador a mitigar ataques de Cross-Site Scripting (XSS) e Clickjacking.
-    * **Onde encontrar no código:**
-        * **Implementação Central:** A lógica está centralizada na função `add_security_headers()`, que usa o decorador `@app.after_request`, dentro do arquivo `app/__init__.py`.
-
-* **Notificações Proativas de Validade**
-    * **Descrição:** Um script customizado (flask send-expiry-alerts) que pode ser executado periodicamente para verificar todos os alimentos no banco de dados, agrupando os que estão próximos do vencimento por usuário e enviando um único e-mail de alerta para cada um.
-    * **Onde encontrar no código:**
-        * **Comando e Lógica Principal:** A lógica de busca e o comando Flask estão na função `send_expiry_alerts` no arquivo `app/cli.py`.
-        * **Envio de E-mail:** A função `send_expiry_alert_email()` em `app/auth/email.py` é responsável por montar e enviar o e-mail.
-        * **Envio de E-mail:** O corpo do e-mail de alerta está em `app/templates/auth/email/expiry_alert.html.`
-
-## Tecnologias Utilizadas
-
-* **Backend:** Python, Flask
-* **Banco de Dados:** PostgreSQL
-* **ORM e Migrações:** Flask-SQLAlchemy, Flask-Migrate
-* **Segurança e Autenticação:** Flask-Login, Flask-Bcrypt, PyJWT (para tokens), Flask-ReCaptcha, pyotp
-* **Envio de E-mail:** Flask-Mail
-* **Frontend:** HTML5, CSS3 (com Templates Jinja2)
-* **Geração de QR Code:** qrcode[pil]
-
-## Como Rodar o Projeto Localmente
+## 🚀 Como Rodar o Projeto Localmente
 
 Siga os passos abaixo para configurar e rodar a aplicação em um ambiente de desenvolvimento.
 
 **Pré-requisitos:**
-* Python 3.10+
-* PostgreSQL instalado e rodando.
+
+  * Python 3.10+
+  * PostgreSQL instalado e rodando.
+  * Git instalado.
 
 **Passos:**
 
-1. **Clone o repositório:**
+1.  **Clone o repositório:**
+
     ```bash
     git clone https://github.com/Omatheus31/GVA-WEB.git
     cd GVA-WEB
     ```
 
-2. **Crie e ative um ambiente virtual:**
+2.  **Crie e ative um ambiente virtual:**
+
     ```bash
     # Windows
     python -m venv venv
-    venv\Scripts\activate
+    .\venv\Scripts\activate
     ```
 
-3. **Instale as dependências:**
+3.  **Instale as dependências:**
+
     ```bash
     pip install -r requirements.txt
     ```
 
-4. **Configure o Banco de Dados PostgreSQL:**
-    * Abra o pgAdmin ou use o `psql`.
-    * Crie um novo banco de dados. Ex: `CREATE DATABASE gva_db;`.
+4.  **Configure o Banco de Dados PostgreSQL:**
 
-5. **Configure as Variáveis de Ambiente:**
-    * Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`:
+      * Abra o pgAdmin ou use o `psql`.
+      * Crie um novo banco de dados. Ex: `CREATE DATABASE gva_db;`.
+
+5.  **Configure as Variáveis de Ambiente:**
+
+      * Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`:
         ```bash
         # Windows
         copy .env.example .env
         ```
-    * Abra o arquivo `.env` e preencha **TODAS** as variáveis com as suas próprias credenciais (chave secreta, URL do banco, chaves do reCAPTCHA, credenciais de e-mail).
+      * Abra o arquivo `.env` e preencha **TODAS** as variáveis com suas próprias credenciais (gere uma `SECRET_KEY` nova, coloque a URL do seu banco, suas chaves do reCAPTCHA e suas credenciais de e-mail com Senha de App).
 
-6. **Aplique as Migrações do Banco de Dados:**
-    * Este comando criará todas as tabelas necessárias.
+6.  **Aplique as Migrações do Banco de Dados:**
+
+      * Este comando criará todas as tabelas necessárias.
+
+    <!-- end list -->
+
     ```bash
     flask db upgrade
     ```
 
-7. **Rode a Aplicação:**
-    ```bash
-    flask run
-    ```
-    A aplicação estará disponível em `http://127.0.0.1:5000`.
+7.  **Crie o Primeiro Usuário Administrador (Opcional):**
 
-## Licença
+      * Registre uma conta normalmente pela interface web.
+      * Abra o terminal (com o `venv` ativo) e execute `flask shell`.
+      * Dentro do shell, execute os seguintes comandos para promover seu usuário:
+        ```python
+        from app.models import User
+        from app.extensions import db
+        # Substitua 'seu_username' pelo nome do usuário que você criou
+        user = User.query.filter_by(username='seu_username').first()
+        if user:
+            user.is_admin = True
+            user.is_confirmed = True # Confirma o admin automaticamente
+            db.session.commit()
+            print(f"Usuário {user.username} promovido a admin e confirmado com sucesso!")
+        exit()
+        ```
+
+8.  **Rode a Aplicação em Modo Seguro (HTTPS):**
+
+    ```bash
+    flask run --cert=adhoc
+    ```
+
+      * A aplicação estará disponível em **`https://127.0.0.1:5000`**.
+      * **Aviso:** Seu navegador exibirá um alerta de segurança. Isso é **normal e esperado**. Clique em "Avançado" e depois em "Ir para 127.0.0.1 (não seguro)" para acessar o site.
+
+9.  **Executando Tarefas Adicionais:**
+
+      * Para enviar os e-mails de alerta de validade, execute o seguinte comando em um terminal separado:
+        ```bash
+        flask send-expiry-alerts
+        ```
+
+## 📄 Licença
 
 Este projeto é distribuído sob a Licença MIT.
 
-## Autor
+## 👨‍💻 Autor
 
-* **Matheus Farias Sousa**
-    * GitHub: https://github.com/Omatheus31
-    * LinkedIn: https://www.linkedin.com/in/matheus-farias-sousa-05873821a/
+  * **Matheus Farias Sousa**
+      * GitHub: [https://github.com/Omatheus31](https://github.com/Omatheus31)
+      * LinkedIn: [https://www.linkedin.com/in/matheus-farias-sousa-05873821a/](https://www.linkedin.com/in/matheus-farias-sousa-05873821a/)
