@@ -30,6 +30,7 @@
                                 <a href="{{ url_for('admin.dashboard') }}" class="admin-link" role="menuitem" tabindex="0">Painel Admin</a>
                             {% endif %}
                             <hr class="dropdown-divider" />
+                            <a href="{{ url_for('main.delete_account') }}" class="text-danger">Excluir Minha Conta</a>
                             <a href="{{ url_for('auth.logout') }}" role="menuitem" tabindex="0">Logout</a>
                         </div>
                     </div>

@@ -315,3 +315,20 @@ footer span {
   margin: 0.5rem 0;
   border-top: 1px solid #444;
 }
+
+/*Delete account*/
+
+a.text-danger {
+    color: #ff4d4d !important;
+}
+a.text-danger:hover {
+    background-color: #ff4d4d !important;
+    color: white !important;
+}
+.button-danger, input[type="submit"].button-danger {
+    background-color: #ff4d4d;
+    color: white;
+}
+.button-danger:hover, input[type="submit"].button-danger:hover {
+    background-color: #e60000;
+}

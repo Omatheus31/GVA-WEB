@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Acesso Proibido{% endblock %}
+
+{% block content %}
+    <div class="error-container" style="text-align: center; padding: 4rem 1rem;">
+        <h1>Erro 403</h1>
+        <h2>Acesso Proibido</h2>
+        <p>Você não tem as permissões necessárias para acessar esta página.</p>
+        <p style="margin-top: 2rem;">
+            <a href="{{ url_for('main.index') }}" class="button">Voltar para a Página Inicial</a>
+        </p>
+    </div>
+{% endblock %}

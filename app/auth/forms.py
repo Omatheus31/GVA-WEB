@@ -105,3 +105,8 @@ class ChangePasswordForm(FlaskForm):
         EqualTo('new_password', message='As senhas devem ser iguais.')
     ])
     submit = SubmitField('Alterar Senha')
+
+class DeleteAccountForm(FlaskForm):
+    password = PasswordField('Para continuar a exclusão, digite sua senha',
+                             validators=[DataRequired(message="A senha é obrigatória para excluir a conta.")])
+    submit = SubmitField('Excluir Minha Conta Permanentemente')

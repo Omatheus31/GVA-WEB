@@ -29,7 +29,7 @@
             <tbody>
                 {% for log in logs %}
                 <tr>
-                    <td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                    <td>{{ log.timestamp | localdatetime }}</td>
                     <td>{{ log.user.username if log.user else 'N/A (Sistema ou Anônimo)' }}</td>
                     <td>{{ log.ip_address }}</td>
                     <td>{{ log.action }}</td>

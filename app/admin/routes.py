@@ -1,6 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 from app.admin import bp
+from app.auth.routes import log_audit
 from app.decorators import admin_required
 from app.models import AuditLog, User
 from app.extensions import db
@@ -42,6 +43,9 @@ def delete_user(user_id):
     db.session.delete(user_to_delete)
     db.session.commit()
 
+    log_audit('ADMIN_DELETED_USER', user_id=current_user.id, details=f"Admin deleted user '{user_to_delete.username}' (ID: {user_to_delete.id}).")
+    db.session.commit()
+    
     flash(f"O usuário '{user_to_delete.username}' foi excluído com sucesso.", 'success')
     return redirect(url_for('admin.users_list'))
 

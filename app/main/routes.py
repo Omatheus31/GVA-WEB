@@ -4,12 +4,12 @@ from app import db
 from app.auth.routes import log_audit
 from app.main import bp
 from app.main.forms import LocationForm, FoodItemForm
-from app.models import Location, FoodItem
+from app.models import Location, FoodItem, User
 import pyotp
 import qrcode
 import io
 import base64
-from ..auth.forms import TwoFactorForm, ChangePasswordForm
+from ..auth.forms import TwoFactorForm, ChangePasswordForm, DeleteAccountForm
 
 @bp.route('/')
 @bp.route('/index')
@@ -229,3 +229,30 @@ def change_password():
             flash('Sua senha atual está incorreta.', 'danger')
 
     return render_template('change_password.html', title='Alterar Senha', form=form)
+
+
+@bp.route('/delete_account', methods=['GET', 'POST'])
+@login_required
+def delete_account():
+    form = DeleteAccountForm()
+    if form.validate_on_submit():
+        # Varifica se a senha fornecida para a confirmação está correta
+        if current_user.check_password(form.password.data):
+            # Guarda o usuário em uma variável temporária antes de deslogar
+            user_to_delete = User.query.get(current_user.id)
+            username = user_to_delete.username
+
+            # Deleta o usuário do banco juntamente com os dados pertencente a ele
+            db.session.delete(user_to_delete)
+            db.session.commit()
+
+            #Faz o logout para invalidar a sessão antes de apagar
+            logout_user()
+
+            flash(f'A conta de {username} foi exluída permanentemente. Sentiremos sua falta!', 'info')
+            return redirect(url_for('main.index'))
+        else:
+            flash('Senha incorreta. A exclusão da sua conta foi cancelada.', 'danger')
+            return redirect(url_for('main.delete_account'))
+    
+    return render_template('delete_account.html', title='Excluir Conta', form=form)

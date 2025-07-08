@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Excluir Conta{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/delete_account.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="delete-account-container">
+    <h1>Excluir Minha Conta</h1>
+    <div class="alert-danger">
+        <strong>ATENÇÃO:</strong> Esta ação é permanente e não pode ser desfeita.<br>
+        Todos os seus dados, incluindo locais e alimentos, serão apagados para sempre.
+    </div>
+    <hr>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label for="{{ form.password.id }}">{{ form.password.label.text }}</label>
+            {{ form.password(autocomplete="current-password", id=form.password.id) }}
+            {% for error in form.password.errors %}
+                <span class="error-message">{{ error }}</span>
+            {% endfor %}
+        </div>
+        {{ form.submit(class_="button-danger") }}
+    </form>
+</div>
+{% endblock %}
